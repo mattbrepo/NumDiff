@@ -113,6 +113,7 @@
             this.textBoxTollerance.Name = "textBoxTollerance";
             this.textBoxTollerance.Size = new System.Drawing.Size(100, 20);
             this.textBoxTollerance.TabIndex = 7;
+            this.textBoxTollerance.KeyUp += new System.Windows.Forms.KeyEventHandler(this.textBoxTollerance_KeyUp);
             // 
             // OptionsForm
             // 

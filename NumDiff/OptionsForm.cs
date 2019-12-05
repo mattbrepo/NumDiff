@@ -40,6 +40,11 @@ namespace NumDiff
 
         private void buttonOk_Click(object sender, EventArgs e)
         {
+            CheckAndClose();
+        }
+
+        private void CheckAndClose()
+        {
             double d;
             if (!NumDiffUtil.TryParseTollerance(textBoxTollerance.Text, out d))
             {
@@ -55,7 +60,7 @@ namespace NumDiff
 
             if (checkBoxSpace.Checked)
                 NumDiff.Properties.Settings.Default.Separators.Add(" ");
-            
+
             if (checkBoxComma.Checked)
                 NumDiff.Properties.Settings.Default.Separators.Add(",");
 
@@ -66,6 +71,12 @@ namespace NumDiff
 
             this.DialogResult = DialogResult.OK;
             this.Close();
+        }
+
+        private void textBoxTollerance_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyValue == 13)
+                CheckAndClose();
         }
 
     }
