@@ -4,9 +4,9 @@ Data comparison tool that calculates and displays the differences between two nu
 **Language: C#**
 
 ## Why
-Comparing two text files is a very common activity in the life of a developer. Sometimes you have to compare files with a lot of doubles and you don't want to be bothered by small differences. For examples when you want 0.30001 to be considered equal to 0.29999. I couldn't find an application solving this stupid daily problem I was experiencing so I developed NumDiff.
+Comparing two text files is a very common activity in the life of a developer. Sometimes you have to compare files with a lot of doubles and you don't want to be bothered by small differences. For examples when you want 0.30001 to be considered equal to 0.29999. I couldn't find an application that was able to solve this simple problem, so I developed NumDiff.
 
-NumDiff takes two text files with the same number of rows and fields (tab or otherwise separated) and compare them. In case of numbers you can adjust the tolerace in the settings dialog.
+NumDiff takes two text files with the same number of rows and fields and compare them. The fields can be separated by tab or other characters. In case of numbers you can adjust the tolerance in the _Options_ dialog.
 
 ## Example
 
