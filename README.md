@@ -2,6 +2,7 @@
 Data comparison tool that calculates and displays the differences between two numeric files.
 
 **Language: C#**
+**Start: 2018**
 
 ## Why
 Comparing two text files is a very common activity in the life of a developer. Sometimes you have to compare files with a lot of doubles and you don't want to be bothered by small differences. For examples when you want 0.30001 to be considered equal to 0.29999. I couldn't find an application that was able to solve this simple problem, so I developed NumDiff.
