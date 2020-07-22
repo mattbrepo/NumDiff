@@ -129,6 +129,7 @@
             this.Controls.Add(this.checkBoxComma);
             this.Controls.Add(this.checkBoxTab);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
             this.Name = "OptionsForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Options";
