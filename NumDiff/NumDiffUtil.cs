@@ -19,7 +19,7 @@ namespace NumDiff
             return double.TryParse(toll, NumberStyles.Any, _nfiDot, out d);
         }
 
-        public static bool Compare(string filePath1, string filePath2, string[] separators, double tollerance, HandleComparedFiles handleFiles, HandleComparedValues handleValues, out int numDiff, out string errMsg)
+        public static bool Compare(string filePath1, string filePath2, string[] separators, double tollerance, HandleComparedFiles handleFiles, HandleComparedValues handleValues, out int numDiff, out int firstDiffRow, out int firstDiffCol, out string errMsg)
         {
             List<string[]> content1 = ReadSepFile(filePath1, separators);
             List<string[]> content2 = ReadSepFile(filePath2, separators);
@@ -27,6 +27,8 @@ namespace NumDiff
             int maxColCount2 = content2.Max(x => x.Length);
 
             numDiff = -1;
+            firstDiffRow = -1;
+            firstDiffCol = -1;
             errMsg = "";
             if (content1 == null)
             {
@@ -84,6 +86,11 @@ namespace NumDiff
                     if (!eql)
                     {
                         numDiff++;
+                        if (firstDiffRow == -1)
+                        {
+                            firstDiffRow = row;
+                            firstDiffCol = col;
+                        }
                     }
 
                     if (handleValues != null)

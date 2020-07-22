@@ -14,16 +14,16 @@ namespace NumDiff
     public partial class MainForm : Form
     {
         private const int MAX_FILE_PATH_VISIBLE = 50;
-        private const string APP_NAME = "NumDiff v0.3";
+        private const string APP_NAME = "NumDiff v0.4";
         
         private string _filePath1, _filePath2;
-        
+        private int _lastGoToRow, _lastGoToCol;
+
         public MainForm()
         {
             InitializeComponent();
             
             this.Text = APP_NAME;
-            toolStripStatusLabel1.Text = "";
             ResetAll(true);
         }
 
@@ -56,6 +56,12 @@ namespace NumDiff
             dataGridView2.Rows.Clear();
             dataGridView2.Columns.Clear();
             vScrollBarMain.Value = 0;
+            toolStripStatusRowsCols.Text = "";
+            toolStripStatusDiffResult.Text = "";
+            toolStripStatusCurrCellLeft.Text = "";
+            toolStripStatusCurrCellRight.Text = "";
+            _lastGoToRow = 0;
+            _lastGoToCol = 0;
         }
 
         /// <summary>
@@ -67,27 +73,30 @@ namespace NumDiff
                 return;
 
             string errMsg;
-            int numDiff;
+            int numDiff, firstDiffRow, firstDiffCol;
 
             System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.WaitCursor;
 
-            if (!NumDiffUtil.Compare(_filePath1, _filePath2, GetSeparators(), NumDiff.Properties.Settings.Default.Tollerance, SetData, ShowData, out numDiff, out errMsg))
+            if (!NumDiffUtil.Compare(_filePath1, _filePath2, GetSeparators(), NumDiff.Properties.Settings.Default.Tollerance, SetData, ShowData, out numDiff, out firstDiffRow, out firstDiffCol, out errMsg))
             {
                 System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.Default;
                 MessageBox.Show(errMsg, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
+            hScrollBarMain.Maximum = dataGridView1.Columns.Count; // one of the two is enough
+            vScrollBarMain.Maximum = dataGridView1.Rows.Count; // one of the two is enough
+
             System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.Default;
 
             //%toolstrip%
             if (numDiff == 0)
             {
-                toolStripStatusLabel1.Text += "No difference found";
+                toolStripStatusDiffResult.Text = "No difference found";
             }
             else
             {
-                toolStripStatusLabel1.Text += "Differences found: " + numDiff;
+                toolStripStatusDiffResult.Text = "Differences found: " + numDiff + " (" + (firstDiffRow + 1) + "," + (firstDiffCol + 1) + ")";
             }
         }
 
@@ -186,7 +195,7 @@ namespace NumDiff
             }
 
 
-            toolStripStatusLabel1.Text = "Rows: " + rows + ", Cols: " + cols + ", "; //%toolstrip%
+            toolStripStatusRowsCols.Text = "Rows: " + rows + ", Cols: " + cols; //%toolstrip%
             vScrollBarMain.Maximum = rows;
         }
 
@@ -316,9 +325,32 @@ namespace NumDiff
             DoCompare();
         }
 
+        private void goToToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            GoToForm gf = new GoToForm();
+            gf.SetRowCol(_lastGoToRow, _lastGoToCol);
+            DialogResult dr = gf.ShowDialog(this);
+            if (dr != DialogResult.OK)
+                return;
+
+            int row, col;
+            if (!gf.GetRowCol(out row, out col))
+                return;
+            try
+            {
+                dataGridView1.CurrentCell = dataGridView1.Rows[row].Cells[col];
+                dataGridView2.CurrentCell = dataGridView2.Rows[row].Cells[col];
+                _lastGoToRow = row;
+                _lastGoToCol = col;
+            }
+            catch
+            {
+            }
+        }
+
         #endregion
 
-        #region scroll
+        #region grid event
 
         private void vScrollBarMain_Scroll(object sender, ScrollEventArgs e)
         {
@@ -326,6 +358,22 @@ namespace NumDiff
             int newValue = Math.Max(0, Math.Min(e.NewValue, dataGridView1.Rows.Count - 1));
             dataGridView1.FirstDisplayedScrollingRowIndex = newValue;
             dataGridView2.FirstDisplayedScrollingRowIndex = newValue;
+        }
+
+        private void dataGridView2_CellStateChanged(object sender, DataGridViewCellStateChangedEventArgs e)
+        {
+            if (e.StateChanged == DataGridViewElementStates.Selected)
+            {
+                toolStripStatusCurrCellRight.Text = "R: " + (e.Cell.RowIndex + 1) + "," + (e.Cell.ColumnIndex + 1);
+            }
+        }
+
+        private void dataGridView1_CellStateChanged(object sender, DataGridViewCellStateChangedEventArgs e)
+        {
+            if (e.StateChanged == DataGridViewElementStates.Selected)
+            {
+                toolStripStatusCurrCellLeft.Text = "L: " + (e.Cell.RowIndex + 1) + "," + (e.Cell.ColumnIndex + 1);
+            }
         }
 
         private void hScrollBarMain_Scroll(object sender, ScrollEventArgs e)

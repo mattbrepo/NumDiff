@@ -51,8 +51,14 @@
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.goToToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripStatusRowsCols = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusDiffResult = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusCurrCellLeft = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusCurrCellRight = new System.Windows.Forms.ToolStripStatusLabel();
             this.panelMain.SuspendLayout();
             this.panelGrids.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -118,6 +124,7 @@
             this.dataGridView2.ScrollBars = System.Windows.Forms.ScrollBars.None;
             this.dataGridView2.Size = new System.Drawing.Size(385, 315);
             this.dataGridView2.TabIndex = 5;
+            this.dataGridView2.CellStateChanged += new System.Windows.Forms.DataGridViewCellStateChangedEventHandler(this.dataGridView2_CellStateChanged);
             this.dataGridView2.ColumnAdded += new System.Windows.Forms.DataGridViewColumnEventHandler(this.dataGridView2_ColumnAdded);
             this.dataGridView2.DragDrop += new System.Windows.Forms.DragEventHandler(this.dataGridView2_DragDrop);
             this.dataGridView2.DragEnter += new System.Windows.Forms.DragEventHandler(this.dataGridView2_DragEnter);
@@ -172,6 +179,7 @@
             this.dataGridView1.ScrollBars = System.Windows.Forms.ScrollBars.None;
             this.dataGridView1.Size = new System.Drawing.Size(380, 315);
             this.dataGridView1.TabIndex = 2;
+            this.dataGridView1.CellStateChanged += new System.Windows.Forms.DataGridViewCellStateChangedEventHandler(this.dataGridView1_CellStateChanged);
             this.dataGridView1.ColumnAdded += new System.Windows.Forms.DataGridViewColumnEventHandler(this.dataGridView1_ColumnAdded);
             this.dataGridView1.DragDrop += new System.Windows.Forms.DragEventHandler(this.dataGridView1_DragDrop);
             this.dataGridView1.DragEnter += new System.Windows.Forms.DragEventHandler(this.dataGridView1_DragEnter);
@@ -264,9 +272,10 @@
             // settingsToolStripMenuItem
             // 
             this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.optionsToolStripMenuItem});
+            this.optionsToolStripMenuItem,
+            this.goToToolStripMenuItem});
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
             this.settingsToolStripMenuItem.Text = "Tools";
             // 
             // optionsToolStripMenuItem
@@ -276,21 +285,63 @@
             this.optionsToolStripMenuItem.Text = "Options";
             this.optionsToolStripMenuItem.Click += new System.EventHandler(this.optionsToolStripMenuItem_Click);
             // 
-            // toolStripStatusLabel1
+            // goToToolStripMenuItem
             // 
-            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(118, 17);
-            this.toolStripStatusLabel1.Text = "toolStripStatusLabel1";
+            this.goToToolStripMenuItem.Name = "goToToolStripMenuItem";
+            this.goToToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
+            this.goToToolStripMenuItem.Text = "Go to";
+            this.goToToolStripMenuItem.Click += new System.EventHandler(this.goToToolStripMenuItem_Click);
+            // 
+            // toolStripStatusRowsCols
+            // 
+            this.toolStripStatusRowsCols.Name = "toolStripStatusRowsCols";
+            this.toolStripStatusRowsCols.Size = new System.Drawing.Size(135, 17);
+            this.toolStripStatusRowsCols.Text = "toolStripStatusRowsCols";
             // 
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripStatusLabel1});
+            this.toolStripStatusRowsCols,
+            this.toolStripStatusLabel1,
+            this.toolStripStatusDiffResult,
+            this.toolStripStatusLabel2,
+            this.toolStripStatusCurrCellLeft,
+            this.toolStripStatusCurrCellRight});
             this.statusStrip1.Location = new System.Drawing.Point(0, 376);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(785, 22);
             this.statusStrip1.TabIndex = 3;
             this.statusStrip1.Text = "statusStrip1";
+            // 
+            // toolStripStatusLabel1
+            // 
+            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(12, 17);
+            this.toolStripStatusLabel1.Text = "-";
+            // 
+            // toolStripStatusDiffResult
+            // 
+            this.toolStripStatusDiffResult.Name = "toolStripStatusDiffResult";
+            this.toolStripStatusDiffResult.Size = new System.Drawing.Size(118, 17);
+            this.toolStripStatusDiffResult.Text = "toolStripStatusLabel2";
+            // 
+            // toolStripStatusLabel2
+            // 
+            this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(12, 17);
+            this.toolStripStatusLabel2.Text = "-";
+            // 
+            // toolStripStatusCurrCellLeft
+            // 
+            this.toolStripStatusCurrCellLeft.Name = "toolStripStatusCurrCellLeft";
+            this.toolStripStatusCurrCellLeft.Size = new System.Drawing.Size(147, 17);
+            this.toolStripStatusCurrCellLeft.Text = "toolStripStatusCurrCellLeft";
+            // 
+            // toolStripStatusCurrCellRight
+            // 
+            this.toolStripStatusCurrCellRight.Name = "toolStripStatusCurrCellRight";
+            this.toolStripStatusCurrCellRight.Size = new System.Drawing.Size(155, 17);
+            this.toolStripStatusCurrCellRight.Text = "toolStripStatusCurrCellRight";
             // 
             // MainForm
             // 
@@ -335,7 +386,7 @@
         private System.Windows.Forms.ToolStripMenuItem openFile2ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem resetToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
-        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusRowsCols;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.VScrollBar vScrollBarMain;
         private System.Windows.Forms.Panel panelGrids;
@@ -348,7 +399,12 @@
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.HScrollBar hScrollBarMain;
         private System.Windows.Forms.ToolStripMenuItem refreshToolStripMenuItem;
-
+        private System.Windows.Forms.ToolStripMenuItem goToToolStripMenuItem;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusDiffResult;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusCurrCellLeft;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusCurrCellRight;
     }
 }
 

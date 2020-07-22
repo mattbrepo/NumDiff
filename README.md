@@ -11,7 +11,6 @@ Comparing two text files is a very common activity in the life of a developer. S
 NumDiff takes two text files with the same number of rows and fields and compare them. The fields can be separated by tab or other characters. In case of numbers you can adjust the tolerance in the _Options_ dialog.
 
 ## Example
-
 File a.txt:
 ```
 ciao,0.30001,5,77.9090
