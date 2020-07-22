@@ -16,7 +16,7 @@ namespace NumDiff
         private const int MAX_FILE_PATH_VISIBLE = 50;
         private const string APP_NAME = "NumDiff v0.4";
         
-        private string _filePath1, _filePath2;
+        private string _filePath1, _filePath2, _lastSearch;
         private int _lastGoToRow, _lastGoToCol;
 
         public MainForm()
@@ -62,6 +62,7 @@ namespace NumDiff
             toolStripStatusCurrCellRight.Text = "";
             _lastGoToRow = 0;
             _lastGoToCol = 0;
+            _lastSearch = "";
         }
 
         /// <summary>
@@ -346,6 +347,34 @@ namespace NumDiff
             catch
             {
             }
+        }
+        
+        private void searchToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SearchForm sf = new SearchForm();
+            sf.SetSearch(_lastSearch);
+            DialogResult dr = sf.ShowDialog(this);
+            if (dr != DialogResult.OK)
+                return;
+            _lastSearch = sf.GetSearch();
+
+            // %improve% very basic search (still usefull when searching a column name)
+            System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.WaitCursor;
+            foreach (DataGridViewRow row in dataGridView1.Rows)
+            {
+                foreach (DataGridViewCell cell in row.Cells)
+                {
+                    if (cell.Value.ToString().Contains(_lastSearch))
+                    {
+                        System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.Default;
+                        MessageBox.Show(_lastSearch + " found at " + (cell.RowIndex + 1) + "," + (cell.ColumnIndex + 1), "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                    }
+                }
+            }
+            System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.Default;
+
+            MessageBox.Show("String not found", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         #endregion
