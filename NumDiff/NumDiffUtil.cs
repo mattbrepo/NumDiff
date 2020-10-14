@@ -23,8 +23,6 @@ namespace NumDiff
         {
             List<string[]> content1 = ReadSepFile(filePath1, separators);
             List<string[]> content2 = ReadSepFile(filePath2, separators);
-            int maxColCount1 = content1.Max(x => x.Length);
-            int maxColCount2 = content2.Max(x => x.Length);
 
             numDiff = -1;
             firstDiffRow = -1;
@@ -48,6 +46,8 @@ namespace NumDiff
                 return false;
             }
 
+            int maxColCount1 = content1.Max(x => x.Length);
+            int maxColCount2 = content2.Max(x => x.Length);
             if (maxColCount1 != maxColCount2)
             {
                 errMsg = "Max number of columns differs: " + maxColCount1 + " != " + maxColCount2;
