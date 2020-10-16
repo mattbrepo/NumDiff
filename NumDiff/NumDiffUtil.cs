@@ -23,7 +23,7 @@ namespace NumDiff
         /// <returns></returns>
         private static bool ReadCompareFiles(CompareResults cmp, out List<Thread> threads)
         {
-            long countLines = 0;
+            int countLines = 0;
             threads = new List<Thread>();
             try
             {
@@ -66,10 +66,21 @@ namespace NumDiff
                     thrLast.Start();
                     threads.Add(thrLast);
 
-                    //%%% gestire lunghezza differente dei file
-                    if (streamReader1.EndOfStream != streamReader2.EndOfStream)
+                    // set row count
+                    cmp.AddRows(0, countLines);
+                    if (!streamReader1.EndOfStream)
                     {
-
+                        int countExtraLines = 0;
+                        while ((line1 = streamReader1.ReadLine()) != null)
+                            countExtraLines++;
+                        cmp.AddRows(1, countExtraLines);
+                    }
+                    else if (!streamReader1.EndOfStream)
+                    {
+                        int countExtraLines = 0;
+                        while ((line2 = streamReader2.ReadLine()) != null)
+                            countExtraLines++;
+                        cmp.AddRows(2, countExtraLines);
                     }
                 }
 
@@ -99,10 +110,14 @@ namespace NumDiff
 
                     if (fields1.Length != fields2.Length)
                     {
+                        cmp.SetMaxCols(1, fields1.Length);
+                        cmp.SetMaxCols(2, fields2.Length);
                         string errMsg = "At row " + realRow + " column number differs: " + fields1.Length + " != " + fields2.Length;
                         cmp.Errors.Add(errMsg);
                         return;
                     }
+
+                    cmp.SetMaxCols(0, fields1.Length);
 
                     for (int col = 0; col < fields1.Length; col++)
                     {
@@ -130,25 +145,21 @@ namespace NumDiff
             catch (Exception ex)
             {
                 cmp.Errors.Add("ProcessLineBlock exception at block starting from " + firstLineBlock + ", ex: " + ex.ToString());
-            }        }
+            }
+        }
 
         public static bool TryParseTollerance(string toll, out double d)
         {
             return double.TryParse(toll, NumberStyles.Any, _nfiDot, out d);
         }
 
-        public static bool Compare(string filePath1, string filePath2, string[] separators, double tollerance, HandleComparedFiles handleFiles, HandleComparedValues handleValues, out int numDiff, out int firstDiffRow, out int firstDiffCol, out string errMsg)
+        public static bool Compare(string filePath1, string filePath2, string[] separators, double tollerance, out CompareResults cmp)
         {
-            numDiff = -1;
-            firstDiffRow = -1;
-            firstDiffCol = -1;
-            errMsg = "";
-
-            CompareResults cmp = new CompareResults() { Tollerance = tollerance, Separators = separators, FilePath1 = filePath1, FilePath2 = filePath2 };
+            cmp = new CompareResults() { Tollerance = tollerance, Separators = separators, FilePath1 = filePath1, FilePath2 = filePath2 };
             List<Thread> threads;
             if (!ReadCompareFiles(cmp, out threads))
             {
-                errMsg = "Cannot read files";
+                cmp.Errors.Add("Cannot read files");
                 return false;
             }
 
@@ -157,63 +168,17 @@ namespace NumDiff
                 threads[i].Join();
             }
 
-            if (cmp.CountLines1 != cmp.CountLines2)
+            if (cmp.CountRows1 != cmp.CountRows2)
             {
-                errMsg = "Line number differs: " + cmp.CountLines1 + " != " + cmp.CountLines2;
+                cmp.Errors.Add("Line number differs: " + cmp.CountRows1 + " != " + cmp.CountRows2);
                 return false;
             }
             
-            //int maxColCount1 = content1.Max(x => x.Length);
-            //int maxColCount2 = content2.Max(x => x.Length);
-            //if (maxColCount1 != maxColCount2)
-            //{
-            //    errMsg = "Max number of columns differs: " + maxColCount1 + " != " + maxColCount2;
-            //    return false;
-            //}
-            //
-            //if (handleFiles != null)
-            //    handleFiles(content1.Count, maxColCount1);
-            //
-            //// main loop
-            //numDiff = 0;
-            //for (int row = 0; row < content1.Count; row++)
-            //{
-            //    if (content1[row].Length != content2[row].Length)
-            //    {
-            //        errMsg = "At row " + row + " column number differs: " + content1[row].Length + " != " + content2[row].Length;
-            //        return false;
-            //    }
-            //
-            //    for (int col = 0; col < content1[row].Length; col++)
-            //    {
-            //        string field1 = content1[row][col];
-            //        string field2 = content2[row][col];
-            //        double d1, d2;
-            //        bool eql = false;
-            //        if (TryParseTollerance(field1, out d1) && double.TryParse(field2, NumberStyles.Any, _nfiDot, out d2))
-            //        {
-            //            double diff = Math.Abs(d1 - d2);
-            //            eql = diff < tollerance;
-            //        }
-            //        else
-            //        {
-            //            eql = field1 == field2;
-            //        }
-            //
-            //        if (!eql)
-            //        {
-            //            numDiff++;
-            //            if (firstDiffRow == -1)
-            //            {
-            //                firstDiffRow = row;
-            //                firstDiffCol = col;
-            //            }
-            //        }
-            //
-            //        if (handleValues != null)
-            //            handleValues(row, col, field1, field2, eql);
-            //    }
-            //}
+            if (cmp.CountCols1 != cmp.CountCols2)
+            {
+                cmp.Errors.Add("Max number of columns differs: " + cmp.CountCols1 + " != " + cmp.CountCols2);
+                return false;
+            }
 
             return true;
         }

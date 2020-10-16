@@ -56,7 +56,7 @@ namespace NumDiff
             dataGridView2.Rows.Clear();
             dataGridView2.Columns.Clear();
 
-            //dataGridView1.VirtualMode = true; //%%%
+            dataGridView1.VirtualMode = true; //%%%
             dataGridView2.VirtualMode = true; //%%%
 
             vScrollBarMain.Value = 0;
@@ -77,31 +77,31 @@ namespace NumDiff
             if (_filePath1 == null || _filePath2 == null)
                 return;
 
-            string errMsg;
-            int numDiff, firstDiffRow, firstDiffCol;
-
             System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.WaitCursor;
 
-            if (!NumDiffUtil.Compare(_filePath1, _filePath2, GetSeparators(), NumDiff.Properties.Settings.Default.Tollerance, SetData, ShowData, out numDiff, out firstDiffRow, out firstDiffCol, out errMsg))
+            //%%%if (!NumDiffUtil.Compare(_filePath1, _filePath2, GetSeparators(), NumDiff.Properties.Settings.Default.Tollerance, SetData, ShowData, out numDiff, out firstDiffRow, out firstDiffCol, out errMsg))
+            CompareResults cmp;
+            if (!NumDiffUtil.Compare(_filePath1, _filePath2, GetSeparators(), NumDiff.Properties.Settings.Default.Tollerance, out cmp))
             {
                 System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.Default;
+
+                string errMsg = string.Join("\n", cmp.Errors);
                 MessageBox.Show(errMsg, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            hScrollBarMain.Maximum = dataGridView1.Columns.Count; // one of the two is enough
-            vScrollBarMain.Maximum = dataGridView1.Rows.Count; // one of the two is enough
+            SetData(cmp.GetMaxCountRows(), cmp.GetMaxCountCols());
 
             System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.Default;
 
             //%toolstrip%
-            if (numDiff == 0)
+            if (cmp.Differences.Count == 0)
             {
                 toolStripStatusDiffResult.Text = "No difference found";
             }
             else
             {
-                toolStripStatusDiffResult.Text = "Differences found: " + numDiff + " (" + (firstDiffRow + 1) + "," + (firstDiffCol + 1) + ")";
+                toolStripStatusDiffResult.Text = "Differences found: " + cmp.Differences.Count; //%%% + " (" + (firstDiffRow + 1) + "," + (firstDiffCol + 1) + ")";
             }
         }
 
@@ -186,23 +186,24 @@ namespace NumDiff
             this.Text = APP_NAME + " - " + GetOnlyLastPart(_filePath1) + " - " + GetOnlyLastPart(_filePath2);
 
             ResetAll(false);
-            for (int col = 0; col < cols; col++)
-            {
-                dataGridView1.Columns.Add("col " + col, "col " + col);
-                //%%%dataGridView2.Columns.Add("col " + col, "col " + col);
-            }
-            for (int row = 0; row < rows; row++)
-            {
-                dataGridView1.Rows.Add();
-                dataGridView1.Rows[row].HeaderCell.Value = "" + (row + 1);
-                //%%%dataGridView2.Rows.Add();
-                //%%%dataGridView2.Rows[row].HeaderCell.Value = "" + (row + 1);
-            }
+            //%%%for (int col = 0; col < cols; col++)
+            //%%%{
+            //%%%    dataGridView1.Columns.Add("col " + col, "col " + col);
+            //%%%    //%%%dataGridView2.Columns.Add("col " + col, "col " + col);
+            //%%%}
+            //%%%for (int row = 0; row < rows; row++)
+            //%%%{
+            //%%%    dataGridView1.Rows.Add();
+            //%%%    dataGridView1.Rows[row].HeaderCell.Value = "" + (row + 1);
+            //%%%    //%%%dataGridView2.Rows.Add();
+            //%%%    //%%%dataGridView2.Rows[row].HeaderCell.Value = "" + (row + 1);
+            //%%%}
             this.dataGridView2.ColumnCount = cols; //%%%
             this.dataGridView2.RowCount = rows; //%%%
 
             toolStripStatusRowsCols.Text = "Rows: " + rows + ", Cols: " + cols; //%toolstrip%
             vScrollBarMain.Maximum = rows;
+            hScrollBarMain.Maximum = cols;
         }
 
         /// <summary>
@@ -396,8 +397,7 @@ namespace NumDiff
 
         private void dataGridView2_CellValueNeeded(object sender, DataGridViewCellValueEventArgs e)
         {
-            //%%%
-            e.Value = dataGridView1[e.ColumnIndex, e.RowIndex].Value;
+            //%%%%%%%%            e.Value = dataGridView1[e.ColumnIndex, e.RowIndex].Value;
         }
 
         private void dataGridView2_CellStateChanged(object sender, DataGridViewCellStateChangedEventArgs e)

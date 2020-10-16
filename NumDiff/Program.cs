@@ -54,25 +54,25 @@ namespace NumDiff
                 else
                     separators[0] = args[1];
 
-                string errMsg;
-                int numDiff, firstDiffRow, firstDiffCol;
-                if (!NumDiffUtil.Compare(args[2], args[3], separators, tollerance, null, null, out numDiff, out firstDiffRow, out firstDiffCol, out errMsg))
-                {
-                    Console.WriteLine(errMsg);
-                    MyExit(0);
-                    return;
-                }
-
-                if (numDiff == 0)
-                {
-                    Console.WriteLine("No difference found");
-                    MyExit(1);
-                }
-                else
-                {
-                    Console.WriteLine("Differences found: " + numDiff);
-                    MyExit(-1);
-                }
+                //%%%string errMsg;
+                //%%%int numDiff, firstDiffRow, firstDiffCol;
+                //%%%if (!NumDiffUtil.Compare(args[2], args[3], separators, tollerance, null, null, out numDiff, out firstDiffRow, out firstDiffCol, out errMsg))
+                //%%%{
+                //%%%    Console.WriteLine(errMsg);
+                //%%%    MyExit(0);
+                //%%%    return;
+                //%%%}
+                //%%%
+                //%%%if (numDiff == 0)
+                //%%%{
+                //%%%    Console.WriteLine("No difference found");
+                //%%%    MyExit(1);
+                //%%%}
+                //%%%else
+                //%%%{
+                //%%%    Console.WriteLine("Differences found: " + numDiff);
+                //%%%    MyExit(-1);
+                //%%%}
 
                 return;
             }
