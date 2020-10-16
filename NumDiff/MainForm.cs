@@ -14,7 +14,7 @@ namespace NumDiff
     public partial class MainForm : Form
     {
         private const int MAX_FILE_PATH_VISIBLE = 50;
-        private const string APP_NAME = "NumDiff v0.4";
+        private const string APP_NAME = "NumDiff v0.5";
         
         private string _filePath1, _filePath2, _lastSearch;
         private int _lastGoToRow, _lastGoToCol;
@@ -55,6 +55,10 @@ namespace NumDiff
             dataGridView1.Columns.Clear();
             dataGridView2.Rows.Clear();
             dataGridView2.Columns.Clear();
+
+            //dataGridView1.VirtualMode = true; //%%%
+            dataGridView2.VirtualMode = true; //%%%
+
             vScrollBarMain.Value = 0;
             toolStripStatusRowsCols.Text = "";
             toolStripStatusDiffResult.Text = "";
@@ -185,16 +189,17 @@ namespace NumDiff
             for (int col = 0; col < cols; col++)
             {
                 dataGridView1.Columns.Add("col " + col, "col " + col);
-                dataGridView2.Columns.Add("col " + col, "col " + col);
+                //%%%dataGridView2.Columns.Add("col " + col, "col " + col);
             }
             for (int row = 0; row < rows; row++)
             {
                 dataGridView1.Rows.Add();
                 dataGridView1.Rows[row].HeaderCell.Value = "" + (row + 1);
-                dataGridView2.Rows.Add();
-                dataGridView2.Rows[row].HeaderCell.Value = "" + (row + 1);
+                //%%%dataGridView2.Rows.Add();
+                //%%%dataGridView2.Rows[row].HeaderCell.Value = "" + (row + 1);
             }
-
+            this.dataGridView2.ColumnCount = cols; //%%%
+            this.dataGridView2.RowCount = rows; //%%%
 
             toolStripStatusRowsCols.Text = "Rows: " + rows + ", Cols: " + cols; //%toolstrip%
             vScrollBarMain.Maximum = rows;
@@ -211,12 +216,12 @@ namespace NumDiff
         private void ShowData(int row, int col, string field1, string field2, bool eql)
         {
             dataGridView1[col, row].Value = field1;
-            dataGridView2[col, row].Value = field2;
+            //%%%dataGridView2[col, row].Value = field2;
 
             if (!eql)
             {
                 dataGridView1[col, row].Style.BackColor = Color.Yellow;
-                dataGridView2[col, row].Style.BackColor = Color.Yellow;
+                //%%%dataGridView2[col, row].Style.BackColor = Color.Yellow;
             }
         }
 
@@ -387,6 +392,12 @@ namespace NumDiff
             int newValue = Math.Max(0, Math.Min(e.NewValue, dataGridView1.Rows.Count - 1));
             dataGridView1.FirstDisplayedScrollingRowIndex = newValue;
             dataGridView2.FirstDisplayedScrollingRowIndex = newValue;
+        }
+
+        private void dataGridView2_CellValueNeeded(object sender, DataGridViewCellValueEventArgs e)
+        {
+            //%%%
+            e.Value = dataGridView1[e.ColumnIndex, e.RowIndex].Value;
         }
 
         private void dataGridView2_CellStateChanged(object sender, DataGridViewCellStateChangedEventArgs e)
