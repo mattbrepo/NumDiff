@@ -6,14 +6,14 @@ using System.IO;
 using System.Globalization;
 using System.Threading;
 
-namespace NumDiff
+namespace NumDiffLib
 {
-    delegate void HandleComparedFiles(int rows, int cols);
-    delegate void HandleComparedValues(int row, int col, string field1, string field2, bool eql);
+    public delegate void HandleComparedFiles(int rows, int cols);
+    public delegate void HandleComparedValues(int row, int col, string field1, string field2, bool eql);
 
-    class NumDiffUtil
+    public class NumDiffUtil
     {
-        private const int MAX_BLOCK_LINES = 200;
+        private const int THREAD_BLOCK_LINES = 500;
         private static NumberFormatInfo _nfiDot = new NumberFormatInfo() { NumberDecimalSeparator = "." };
 
         /// <summary>
@@ -34,19 +34,20 @@ namespace NumDiff
                 {
                     List<string> lineBlock1 = new List<string>();
                     List<string> lineBlock2 = new List<string>();
-                    long firstLineBlock = 0;
+                    int firstLineBlock = 0;
                     string line1, line2;
                     while ((line1 = streamReader1.ReadLine()) != null && (line2 = streamReader2.ReadLine()) != null)
                     {
                         lineBlock1.Add(line1);
                         lineBlock2.Add(line2);
-                        if (lineBlock1.Count >= MAX_BLOCK_LINES)
+                        if (lineBlock1.Count >= THREAD_BLOCK_LINES)
                         {
-                            // pass lineBlocks to a thread
+                            // pass lineBlocks to a new thread
                             NumDiffUtil ndu = new NumDiffUtil();
-                            string[] block1 = lineBlock1.ToArray();
-                            string[] block2 = lineBlock2.ToArray();
-                            Thread thr = new Thread(() => ndu.ProcessLineBlock(firstLineBlock, block1, block2, cmp));
+                            string[] thrLB1 = lineBlock1.ToArray();
+                            string[] thrLB2 = lineBlock2.ToArray();
+                            int thrFLB = firstLineBlock;
+                            Thread thr = new Thread(() => ndu.ProcessLineBlock(thrFLB, thrLB1, thrLB2, cmp));
                             thr.Start();
                             threads.Add(thr);
 
@@ -58,11 +59,11 @@ namespace NumDiff
                         countLines++;
                     }
 
-                    // pass last lineBlocks to a thread
+                    // pass the last lineBlocks to a new thread
                     NumDiffUtil nduLast = new NumDiffUtil();
-                    string[] blockLast1 = lineBlock1.ToArray();
-                    string[] blockLast2 = lineBlock2.ToArray();
-                    Thread thrLast = new Thread(() => nduLast.ProcessLineBlock(firstLineBlock, blockLast1, blockLast2, cmp));
+                    string[] thrLastLB1 = lineBlock1.ToArray();
+                    string[] thrLastLB2 = lineBlock2.ToArray();
+                    Thread thrLast = new Thread(() => nduLast.ProcessLineBlock(firstLineBlock, thrLastLB1, thrLastLB2, cmp));
                     thrLast.Start();
                     threads.Add(thrLast);
 
@@ -93,14 +94,37 @@ namespace NumDiff
             }
         }
 
-        private void ProcessLineBlock(long firstLineBlock, string[] lineBlock1, string[] lineBlock2, CompareResults cmp)
+        /// <summary>
+        /// Process two block of lines for comparison
+        /// </summary>
+        /// <param name="firstLineBlock"></param>
+        /// <param name="lineBlock1"></param>
+        /// <param name="lineBlock2"></param>
+        /// <param name="cmp"></param>
+        private void ProcessLineBlock(int firstLineBlock, string[] lineBlock1, string[] lineBlock2, CompareResults cmp)
         {
             try
             {
+                // read headers
+                if (cmp.ReadHeaders && firstLineBlock == 0)
+                {
+                    string[] fields1 = lineBlock1[0].Split(cmp.Separators, StringSplitOptions.None);
+                    string[] fields2 = lineBlock2[0].Split(cmp.Separators, StringSplitOptions.None);
+
+                    if (fields1.Length >= fields2.Length)
+                    {
+                        cmp.Headers = fields1.ToList();
+                    }
+                    else
+                    {
+                        cmp.Headers = fields2.ToList();
+                    }
+                }
+
                 int minLines = Math.Min(lineBlock1.Length, lineBlock2.Length);
                 for (int row = 0; row < minLines; row++)
                 {
-                    long realRow = firstLineBlock + row;
+                    int realRow = firstLineBlock + row;
 
                     string line1 = lineBlock1[row];
                     string[] fields1 = line1.Split(cmp.Separators, StringSplitOptions.None);
@@ -110,14 +134,17 @@ namespace NumDiff
 
                     if (fields1.Length != fields2.Length)
                     {
-                        cmp.SetMaxCols(1, fields1.Length);
-                        cmp.SetMaxCols(2, fields2.Length);
+                        if (fields1.Length > cmp.CountCols1)
+                            cmp.SetMaxCols(1, fields1.Length);
+                        if (fields2.Length > cmp.CountCols2)
+                            cmp.SetMaxCols(2, fields2.Length);
                         string errMsg = "At row " + realRow + " column number differs: " + fields1.Length + " != " + fields2.Length;
                         cmp.Errors.Add(errMsg);
                         return;
                     }
 
-                    cmp.SetMaxCols(0, fields1.Length);
+                    if (fields1.Length > cmp.CountCols1 || fields1.Length > cmp.CountCols2)
+                        cmp.SetMaxCols(0, fields1.Length);
 
                     for (int col = 0; col < fields1.Length; col++)
                     {
@@ -125,6 +152,12 @@ namespace NumDiff
                         string field2 = fields2[col];
                         double d1, d2;
                         bool eql = false;
+
+                        if (realRow == 3329 && field1 == "na")
+                        {
+
+                        }
+
                         if (TryParseTollerance(field1, out d1) && double.TryParse(field2, NumberStyles.Any, _nfiDot, out d2))
                         {
                             double diff = Math.Abs(d1 - d2);
@@ -137,7 +170,8 @@ namespace NumDiff
 
                         if (!eql)
                         {
-                            cmp.Differences.Add(new DifferentCells { Row = realRow, Col = col });
+                            string name = cmp.NameColumnIndex >= 0 ? fields1[cmp.NameColumnIndex] : "";
+                            cmp.Differences.Add(new DifferentCell { Row = realRow, Col = col, Value1 = field1, Value2 = field2, Name = name });
                         }
                     }
                 }
@@ -153,9 +187,13 @@ namespace NumDiff
             return double.TryParse(toll, NumberStyles.Any, _nfiDot, out d);
         }
 
-        public static bool Compare(string filePath1, string filePath2, string[] separators, double tollerance, out CompareResults cmp)
+        /// <summary>
+        /// Read and compare two files
+        /// </summary>
+        /// <param name="cmp"></param>
+        /// <returns></returns>
+        public static bool ReadCompare(CompareResults cmp)
         {
-            cmp = new CompareResults() { Tollerance = tollerance, Separators = separators, FilePath1 = filePath1, FilePath2 = filePath2 };
             List<Thread> threads;
             if (!ReadCompareFiles(cmp, out threads))
             {
@@ -181,6 +219,45 @@ namespace NumDiff
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Read a block of lines
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="separators"></param>
+        /// <param name="row"></param>
+        /// <returns></returns>
+        public static List<string[]> ReadBlock(string filePath, string[] separators, int row, int rowCount)
+        {
+            try
+            {
+                int countLines = 0;
+                int rowEnd = row + rowCount;
+                List<string[]> res = new List<string[]>();
+                using (FileStream fileStream = File.OpenRead(filePath))
+                using (StreamReader streamReader = new StreamReader(fileStream))
+                {
+                    string line;
+                    while ((line = streamReader.ReadLine()) != null)
+                    {
+                        if (countLines >= row && countLines < rowEnd)
+                        {
+                            string[] fields = line.Split(separators, StringSplitOptions.None);
+                            res.Add(fields);
+                        }
+                        countLines++;
+                    }
+                }
+
+                return res;
+            }
+            catch (Exception ex)
+            {
+                ex.ToString();
+                return null;
+            }
+
         }
     }
 }

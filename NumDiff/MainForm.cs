@@ -8,22 +8,38 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Globalization;
+using NumDiffLib;
+
+//%%% 
+// * there is still a lot to do on the datagrid!!!
+// * show complete list of row/col different (maybe in a separate sortable table)
+// * add option to show only column with at least one differnent value
+// * add option to ignore na<->number
+// * add option to use first row as table header
+// * add button to jump to previous/next difference cell
 
 namespace NumDiff
 {
     public partial class MainForm : Form
     {
-        private const int MAX_FILE_PATH_VISIBLE = 50;
         private const string APP_NAME = "NumDiff v0.5";
+        private const int MAX_FILE_PATH_VISIBLE = 50;
+        private const int READ_BLOCK_LINES = 50;
         
         private string _filePath1, _filePath2, _lastSearch;
         private int _lastGoToRow, _lastGoToCol;
+
+        private int[] _readBlockRowIndex = new int[2];
+        private List<string[]>[] _readBlockRows = new List<string[]>[2];
+        private CompareResults _cmp;
 
         public MainForm()
         {
             InitializeComponent();
             
             this.Text = APP_NAME;
+            dataGridView1.VirtualMode = true;
+            dataGridView2.VirtualMode = true;
             ResetAll(true);
         }
 
@@ -56,14 +72,12 @@ namespace NumDiff
             dataGridView2.Rows.Clear();
             dataGridView2.Columns.Clear();
 
-            dataGridView1.VirtualMode = true; //%%%
-            dataGridView2.VirtualMode = true; //%%%
-
             vScrollBarMain.Value = 0;
             toolStripStatusRowsCols.Text = "";
             toolStripStatusDiffResult.Text = "";
             toolStripStatusCurrCellLeft.Text = "";
             toolStripStatusCurrCellRight.Text = "";
+
             _lastGoToRow = 0;
             _lastGoToCol = 0;
             _lastSearch = "";
@@ -79,30 +93,33 @@ namespace NumDiff
 
             System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.WaitCursor;
 
-            //%%%if (!NumDiffUtil.Compare(_filePath1, _filePath2, GetSeparators(), NumDiff.Properties.Settings.Default.Tollerance, SetData, ShowData, out numDiff, out firstDiffRow, out firstDiffCol, out errMsg))
-            CompareResults cmp;
-            if (!NumDiffUtil.Compare(_filePath1, _filePath2, GetSeparators(), NumDiff.Properties.Settings.Default.Tollerance, out cmp))
+            _cmp = new CompareResults() { Tollerance = NumDiff.Properties.Settings.Default.Tollerance, Separators = GetSeparators(), FilePath1 = _filePath1, FilePath2 = _filePath2 };
+            if (!NumDiffUtil.ReadCompare(_cmp))
             {
                 System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.Default;
 
-                string errMsg = string.Join("\n", cmp.Errors);
+                string errMsg = string.Join("\n", _cmp.Errors);
                 MessageBox.Show(errMsg, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            SetData(cmp.GetMaxCountRows(), cmp.GetMaxCountCols());
+            // read first block (it could be optimized)
+            UpdateReadBlock(0);
 
-            System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.Default;
+            // set UI data
+            SetData(_cmp.GetMaxCountRows(), _cmp.GetMaxCountCols());
 
             //%toolstrip%
-            if (cmp.Differences.Count == 0)
+            if (_cmp.Differences.Count == 0)
             {
                 toolStripStatusDiffResult.Text = "No difference found";
             }
             else
             {
-                toolStripStatusDiffResult.Text = "Differences found: " + cmp.Differences.Count; //%%% + " (" + (firstDiffRow + 1) + "," + (firstDiffCol + 1) + ")";
+                toolStripStatusDiffResult.Text = "Differences found: " + _cmp.Differences.Count;
             }
+
+            System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.Default;
         }
 
         /// <summary>
@@ -186,43 +203,46 @@ namespace NumDiff
             this.Text = APP_NAME + " - " + GetOnlyLastPart(_filePath1) + " - " + GetOnlyLastPart(_filePath2);
 
             ResetAll(false);
-            //%%%for (int col = 0; col < cols; col++)
-            //%%%{
-            //%%%    dataGridView1.Columns.Add("col " + col, "col " + col);
-            //%%%    //%%%dataGridView2.Columns.Add("col " + col, "col " + col);
-            //%%%}
-            //%%%for (int row = 0; row < rows; row++)
-            //%%%{
-            //%%%    dataGridView1.Rows.Add();
-            //%%%    dataGridView1.Rows[row].HeaderCell.Value = "" + (row + 1);
-            //%%%    //%%%dataGridView2.Rows.Add();
-            //%%%    //%%%dataGridView2.Rows[row].HeaderCell.Value = "" + (row + 1);
-            //%%%}
-            this.dataGridView2.ColumnCount = cols; //%%%
-            this.dataGridView2.RowCount = rows; //%%%
+            dataGridView1.ColumnCount = cols;
+            dataGridView1.RowCount = rows;
+            dataGridView2.ColumnCount = cols;
+            dataGridView2.RowCount = rows;
 
             toolStripStatusRowsCols.Text = "Rows: " + rows + ", Cols: " + cols; //%toolstrip%
             vScrollBarMain.Maximum = rows;
             hScrollBarMain.Maximum = cols;
         }
 
-        /// <summary>
-        /// Show cell data
-        /// </summary>
-        /// <param name="row"></param>
-        /// <param name="col"></param>
-        /// <param name="field1"></param>
-        /// <param name="field2"></param>
-        /// <param name="eql"></param>
-        private void ShowData(int row, int col, string field1, string field2, bool eql)
+        private string GetCellValue(int fileNum, int row, int col)
         {
-            dataGridView1[col, row].Value = field1;
-            //%%%dataGridView2[col, row].Value = field2;
-
-            if (!eql)
+            if (_readBlockRows[fileNum - 1] == null || row < _readBlockRowIndex[fileNum - 1] || row > (_readBlockRowIndex[fileNum - 1] + _readBlockRows[fileNum - 1].Count))
             {
-                dataGridView1[col, row].Style.BackColor = Color.Yellow;
-                //%%%dataGridView2[col, row].Style.BackColor = Color.Yellow;
+                System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.WaitCursor;
+                UpdateReadBlock(row);
+                System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.Default;
+                if (_readBlockRows[fileNum - 1] == null)
+                    return "";
+            }
+
+            int intRow = row - _readBlockRowIndex[fileNum - 1];
+
+            if (intRow < 0 || intRow >= _readBlockRows[fileNum - 1].Count)
+                return "";
+            if (col < 0 || col >= _readBlockRows[fileNum - 1][intRow].Length)
+                return "";
+            return _readBlockRows[fileNum - 1][intRow][col];
+        }
+
+        private void UpdateReadBlock(int row)
+        {
+            int visibleRowCount = dataGridView1.Rows.GetRowCount(DataGridViewElementStates.Displayed);
+            if (visibleRowCount == 0)
+                visibleRowCount = READ_BLOCK_LINES;
+
+            for (int fileNum = 1; fileNum <= 2; fileNum++)
+            {
+                _readBlockRows[fileNum - 1] = NumDiffUtil.ReadBlock(fileNum == 1 ? _filePath1 : _filePath2, GetSeparators(), row, visibleRowCount);
+                _readBlockRowIndex[fileNum - 1] = row;
             }
         }
 
@@ -397,7 +417,28 @@ namespace NumDiff
 
         private void dataGridView2_CellValueNeeded(object sender, DataGridViewCellValueEventArgs e)
         {
-            //%%%%%%%%            e.Value = dataGridView1[e.ColumnIndex, e.RowIndex].Value;
+            e.Value = GetCellValue(1, e.RowIndex, e.ColumnIndex);
+        }
+
+        private void dataGridView1_CellValueNeeded(object sender, DataGridViewCellValueEventArgs e)
+        {
+            e.Value = GetCellValue(2, e.RowIndex, e.ColumnIndex);
+        }
+
+        private void dataGridView2_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (_cmp.HasDifference(e.RowIndex, e.ColumnIndex))
+                e.CellStyle.BackColor = Color.Yellow;
+            else
+                e.CellStyle.BackColor = SystemColors.Window;
+        }
+
+        private void dataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (_cmp.HasDifference(e.RowIndex, e.ColumnIndex))
+                e.CellStyle.BackColor = Color.Yellow;
+            else
+                e.CellStyle.BackColor = SystemColors.Window;
         }
 
         private void dataGridView2_CellStateChanged(object sender, DataGridViewCellStateChangedEventArgs e)

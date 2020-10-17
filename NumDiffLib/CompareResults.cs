@@ -4,39 +4,49 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace NumDiff
+namespace NumDiffLib
 {
-    class DifferentCells
+    public class DifferentCell
     {
-        public long Col { get; set; }
-        public long Row { get; set; }
+        public string Name { get; set; }
+        public int Col { get; set; }
+        public int Row { get; set; }
+        public string Value1 { get; set; }
+        public string Value2 { get; set; }
     }
 
-    class CompareResults
+    public class CompareResults
     {
-        private readonly object _lockObj = new object();
+        private readonly object _lockObjRow = new object();
+        private readonly object _lockObjCol = new object();
 
         public string[] Separators { get; set; }
         public double Tollerance { get; set; }
+        public bool ReadHeaders { get; set; }
+        public int NameColumnIndex { get; set; }
+
         public string FilePath1 { get; set; }
         public string FilePath2 { get; set; }
-        public long CountRows1 { get; private set; }
-        public long CountRows2 { get; private set; }
-        public long CountCols1 { get; private set; }
-        public long CountCols2 { get; private set; }
+        public int CountRows1 { get; private set; }
+        public int CountRows2 { get; private set; }
+        public int CountCols1 { get; private set; }
+        public int CountCols2 { get; private set; }
+        public List<string> Headers { get; set; }
 
-        public ConcurrentBag<DifferentCells> Differences { get; set; }
+        public ConcurrentBag<DifferentCell> Differences { get; set; }
         public ConcurrentBag<string> Errors { get; set; }
 
         public CompareResults()
         {
-            Differences = new ConcurrentBag<DifferentCells>();
+            Differences = new ConcurrentBag<DifferentCell>();
             Errors = new ConcurrentBag<string>();
+            Headers = new List<string>();
+            NameColumnIndex = -1;
         }
 
         public void AddRows(int fileNum, int rows)
         {
-            lock (_lockObj)
+            lock (_lockObjRow)
             {
                 if (fileNum == 1)
                 {
@@ -56,7 +66,7 @@ namespace NumDiff
 
         public void SetMaxCols(int fileNum, int cols)
         {
-            lock (_lockObj)
+            lock (_lockObjCol)
             {
                 if (fileNum == 1)
                 {
@@ -86,6 +96,11 @@ namespace NumDiff
         public int GetMaxCountCols()
         {
             return Convert.ToInt32(Math.Max(CountCols1, CountCols2));
+        }
+
+        public bool HasDifference(int rowIndex, int columnIndex)
+        {
+            return Differences.Any(x => x.Row == rowIndex && x.Col == columnIndex);
         }
     }
 }
