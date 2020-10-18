@@ -9,7 +9,7 @@ namespace NumDiffCLI
 {
     class Program
     {
-        private const double DEFAULT_TOLLERANCE = 0.001;
+        private const double DEFAULT_TOLLERANCE = 0.0001;
         private const string DEFAULT_SEPARATOR = "\t";
 
         static int Main(string[] args)
@@ -62,13 +62,18 @@ namespace NumDiffCLI
                 return 1;
             }
 
+            Console.WriteLine("file 1: " + filePath1);
+            Console.WriteLine("file 2: " + filePath2);
             Console.WriteLine("Differences found: " + cmp.Differences.Count);
             Console.WriteLine();
             Console.WriteLine("============================ differences");
+
+            // sort and group the differences
             var diffs = cmp.Differences.OrderBy(x => x.Row).ThenBy(x => x.Col).GroupBy(x => x.Row).ToList();
+            string oldHeader = "";
             for (int i = 0; i < diffs.Count; i++)
             {
-                
+
                 string header = "ROW";
                 string values1 = "" + diffs[i].Key;
                 string values2 = "" + diffs[i].Key;
@@ -88,10 +93,14 @@ namespace NumDiffCLI
                     values2 += "\t" + cell.Value2;
                 }
 
-                Console.WriteLine(header);
+                if (oldHeader != header)
+                {
+                    oldHeader = header;
+                    Console.WriteLine();
+                    Console.WriteLine(header);
+                }
                 Console.WriteLine(values1);
                 Console.WriteLine(values2);
-                Console.WriteLine();
             }
 
             if (cmp.Errors.Count > 0)
