@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NumDiffLib;
+
+//%%% permettere comparazione di due directory
 
 namespace NumDiffCLI
 {
@@ -16,18 +19,19 @@ namespace NumDiffCLI
         {
             if (args.Length < 2)
             {
-                Console.WriteLine("usage: NumDiff <filepath1> <filepath2> [options]");
+                Console.WriteLine("usage: NumDiff <path1> <path2> [options]");
                 Console.WriteLine();
                 Console.WriteLine("options:");
-                Console.WriteLine("-toll <value>: tollerance value (default: " + DEFAULT_TOLLERANCE + ")");
-                Console.WriteLine("-sep <TAB|SPACE|any char>: field separator (default: TAB)");
-                Console.WriteLine("-jnd: Just print Number of Differences");
-                Console.WriteLine("-name <column num>: print the row name which is in specified column");
+                Console.WriteLine("-dir: paths refer to two directories)");
+                //Console.WriteLine("-toll <value>: tollerance value (default: " + DEFAULT_TOLLERANCE + ")");
+                //Console.WriteLine("-sep <TAB|SPACE|any char>: field separator (default: TAB)");
+                //Console.WriteLine("-jnd: Just print Number of Differences");
+                //Console.WriteLine("-name <column num>: print the row name which is in specified column");
                 return 0;
             }
 
-            string filePath1 = args[0];
-            string filePath2 = args[1];
+            string path1 = args[0];
+            string path2 = args[1];
 
             double tollerance = DEFAULT_TOLLERANCE;
             //%%%if (!NumDiffUtil.TryParseTollerance(args[0], out tollerance))
@@ -48,6 +52,64 @@ namespace NumDiffCLI
 
             int nameColumnIndex = 1; //%%%
 
+            if (HasArg(args, "-dir"))
+            {
+                string dir1 = Path.GetDirectoryName(path1);
+                string pattern1 = Path.GetFileName(path1);
+                if (pattern1 == "") pattern1 = "*.*";
+
+                string dir2 = Path.GetDirectoryName(path2);
+                string pattern2 = Path.GetFileName(path2);
+                if (pattern2 == "") pattern2 = "*.*";
+
+
+                string[] files1 = Directory.GetFiles(dir1, pattern1);
+                for (int i = 0; i < files1.Count(); i++)
+                {
+                    string filePath1 = files1[i];
+                    string filePath2 = Path.Combine(dir2, Path.GetFileName(filePath1));
+
+                    Console.WriteLine();
+                    Console.WriteLine("========================================= " + (i + 1));
+                    if (File.Exists(filePath2))
+                    {
+                        ManageCompareFiles(filePath1, filePath2, nameColumnIndex, tollerance, separators);
+                    }
+                    else
+                    {
+                        Console.WriteLine("File does not exists: " + filePath2);
+                    }
+                }
+
+                // check for files existing only path2
+                string[] files2 = Directory.GetFiles(path2);
+                for (int i = 0; i < files2.Count(); i++)
+                {
+                    string filePath2 = files2[i];
+                    string filePath1 = Path.Combine(dir1, Path.GetFileName(filePath2));
+
+                    if (!File.Exists(filePath1))
+                    {
+                        Console.WriteLine();
+                        Console.WriteLine("========================================= " + (files1.Count() + i + 1));
+
+                        Console.WriteLine("File does not exists: " + filePath1);
+                    }
+                }
+
+                return 0;
+            }
+
+            ManageCompareFiles(path1, path2, nameColumnIndex, tollerance, separators);
+
+            return 0;
+        }
+
+        private static int ManageCompareFiles(string filePath1, string filePath2, int nameColumnIndex, double tollerance, string[] separators)
+        {
+            Console.WriteLine("file 1: " + filePath1);
+            Console.WriteLine("file 2: " + filePath2);
+
             CompareResults cmp = new CompareResults() { Tollerance = tollerance, Separators = separators, ReadHeaders = true, NameColumnIndex = nameColumnIndex, FilePath1 = filePath1, FilePath2 = filePath2 };
             if (!NumDiffUtil.ReadCompare(cmp))
             {
@@ -62,8 +124,6 @@ namespace NumDiffCLI
                 return 1;
             }
 
-            Console.WriteLine("file 1: " + filePath1);
-            Console.WriteLine("file 2: " + filePath2);
             Console.WriteLine("Differences found: " + cmp.Differences.Count);
             Console.WriteLine();
             Console.WriteLine("============================ differences");
@@ -111,7 +171,18 @@ namespace NumDiffCLI
                     Console.WriteLine(cmp.Errors.ElementAt(i));
                 }
             }
+
             return 0;
+        }
+
+        private static bool HasArg(string[] args, string arg)
+        {
+            for (int i = 0; i < args.Count(); i++)
+            {
+                if (args[i] == arg)
+                    return true;
+            }
+            return false;
         }
     }
 }
