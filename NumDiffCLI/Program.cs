@@ -62,7 +62,6 @@ namespace NumDiffCLI
                 string pattern2 = Path.GetFileName(path2);
                 if (pattern2 == "") pattern2 = "*.*";
 
-
                 string[] files1 = Directory.GetFiles(dir1, pattern1);
                 for (int i = 0; i < files1.Count(); i++)
                 {
@@ -82,7 +81,7 @@ namespace NumDiffCLI
                 }
 
                 // check for files existing only path2
-                string[] files2 = Directory.GetFiles(path2);
+                string[] files2 = Directory.GetFiles(dir2, pattern2);
                 for (int i = 0; i < files2.Count(); i++)
                 {
                     string filePath2 = files2[i];
