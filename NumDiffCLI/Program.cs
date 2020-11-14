@@ -6,8 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using NumDiffLib;
 
-//%%% permettere comparazione di due directory
-
 namespace NumDiffCLI
 {
     class Program
@@ -23,10 +21,10 @@ namespace NumDiffCLI
                 Console.WriteLine();
                 Console.WriteLine("options:");
                 Console.WriteLine("-dir: paths refer to two directories)");
-                //Console.WriteLine("-toll <value>: tollerance value (default: " + DEFAULT_TOLLERANCE + ")");
-                //Console.WriteLine("-sep <TAB|SPACE|any char>: field separator (default: TAB)");
+                Console.WriteLine("-toll <value>: tollerance value (default: " + DEFAULT_TOLLERANCE + ")");
+                Console.WriteLine("-sep <TAB|SPACE|any char>: field separator (default: TAB)");
+                Console.WriteLine("-name <column num>: print the row name which is in specified the 0-based column number (default: 1)");
                 //Console.WriteLine("-jnd: Just print Number of Differences");
-                //Console.WriteLine("-name <column num>: print the row name which is in specified column");
                 return 0;
             }
 
@@ -34,23 +32,39 @@ namespace NumDiffCLI
             string path2 = args[1];
 
             double tollerance = DEFAULT_TOLLERANCE;
-            //%%%if (!NumDiffUtil.TryParseTollerance(args[0], out tollerance))
-            //%%%{
-            //%%%    Console.WriteLine("Tollerance is not a valid number");
-            //%%%    MyExit(0);
-            //%%%    return;
-            //%%%}
+            if (HasArg(args, "-toll"))
+            {
+                string val = GetArgPar(args, "-toll", 1);
+                if (!NumDiffUtil.TryParseTollerance(val, out tollerance))
+                {
+                    Console.WriteLine("Tollerance is not a valid number");
+                    return 1;
+                }
+            }
 
             string[] separators = new string[1];
             separators[0] = DEFAULT_SEPARATOR;
-            //%%%if (args[1] == "TAB")
-            //%%%    separators[0] = "\t";
-            //%%%else if (args[1] == "SPACE")
-            //%%%    separators[0] = " ";
-            //%%%else
-            //%%%    separators[0] = args[1];
+            if (HasArg(args, "-sep"))
+            {
+                string val = GetArgPar(args, "-sep", 1);
+                if (val == "TAB")
+                    separators[0] = "\t";
+                else if (val == "SPACE")
+                    separators[0] = " ";
+                else
+                    separators[0] = val;
+            }
 
-            int nameColumnIndex = 1; //%%%
+            int nameColumnIndex = 1;
+            if (HasArg(args, "-name"))
+            {
+                string val = GetArgPar(args, "-name", 1);
+                if (!int.TryParse(val, out nameColumnIndex))
+                {
+                    Console.WriteLine("Column number is not a valid number");
+                    return 1;
+                }
+            }
 
             if (HasArg(args, "-dir"))
             {
@@ -176,12 +190,25 @@ namespace NumDiffCLI
 
         private static bool HasArg(string[] args, string arg)
         {
+            string val = GetArgPar(args, arg, 0);
+
+            if (val != "")
+                return true;
+            return false;
+        }
+
+        private static string GetArgPar(string[] args, string arg, int parCount)
+        {
             for (int i = 0; i < args.Count(); i++)
             {
                 if (args[i] == arg)
-                    return true;
+                {
+                    return args[i + parCount];
+                }
             }
-            return false;
+            return "";
         }
+
+
     }
 }
