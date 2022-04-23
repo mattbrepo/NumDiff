@@ -187,7 +187,7 @@ namespace NumDiff
                 else
                 {
                     textBox2.Text = filePath;
-                    textBox2.SelectionStart = textBox1.TextLength;
+                    textBox2.SelectionStart = textBox2.TextLength;
                 }
             }
         }
@@ -417,12 +417,12 @@ namespace NumDiff
 
         private void dataGridView2_CellValueNeeded(object sender, DataGridViewCellValueEventArgs e)
         {
-            e.Value = GetCellValue(1, e.RowIndex, e.ColumnIndex);
+            e.Value = GetCellValue(2, e.RowIndex, e.ColumnIndex);
         }
 
         private void dataGridView1_CellValueNeeded(object sender, DataGridViewCellValueEventArgs e)
         {
-            e.Value = GetCellValue(2, e.RowIndex, e.ColumnIndex);
+            e.Value = GetCellValue(1, e.RowIndex, e.ColumnIndex);
         }
 
         private void dataGridView2_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
@@ -439,6 +439,19 @@ namespace NumDiff
                 e.CellStyle.BackColor = Color.Yellow;
             else
                 e.CellStyle.BackColor = SystemColors.Window;
+        }
+
+        private void showDifferencesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_cmp != null && _cmp.Differences.Count > 0)
+            {
+                string msg = "";
+                for (int i = 0; i < _cmp.Differences.Count; i++) //%%% ordinare per riga/colonna
+                {
+                    msg += (_cmp.Differences.ElementAt(i).Row + 1) + ", " + (_cmp.Differences.ElementAt(i).Col + 1) + "\n";
+                }
+                MessageBox.Show(msg);
+            }
         }
 
         private void dataGridView2_CellStateChanged(object sender, DataGridViewCellStateChangedEventArgs e)
