@@ -10,19 +10,11 @@ using System.IO;
 using System.Globalization;
 using NumDiffLib;
 
-//%%% 
-// * there is still a lot to do on the datagrid!!!
-// * show complete list of row/col different (maybe in a separate sortable table)
-// * add option to show only column with at least one differnent value
-// * add option to ignore na<->number
-// * add option to use first row as table header
-// * add button to jump to previous/next difference cell
-
 namespace NumDiff
 {
     public partial class MainForm : Form
     {
-        private const string APP_NAME = "NumDiff v0.5";
+        private const string APP_NAME = "NumDiff v0.6";
         private const int MAX_FILE_PATH_VISIBLE = 50;
         private const int READ_BLOCK_LINES = 50;
         
@@ -241,7 +233,7 @@ namespace NumDiff
 
             for (int fileNum = 1; fileNum <= 2; fileNum++)
             {
-                _readBlockRows[fileNum - 1] = NumDiffUtil.ReadBlock(fileNum == 1 ? _filePath1 : _filePath2, GetSeparators(), row, visibleRowCount);
+                _readBlockRows[fileNum - 1] = NumDiffUtil.ReadBlock(fileNum == 1 ? _filePath1 : _filePath2, _cmp, row, visibleRowCount);
                 _readBlockRowIndex[fileNum - 1] = row;
             }
         }

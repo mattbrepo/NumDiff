@@ -5,6 +5,7 @@ using System.Text;
 using System.IO;
 using System.Globalization;
 using System.Threading;
+using Microsoft.VisualBasic.FileIO;
 
 namespace NumDiffLib
 {
@@ -94,6 +95,28 @@ namespace NumDiffLib
             }
         }
 
+        private static string[] Split(string[] separators, bool hasQuotes, string line)
+        {
+            TextFieldParser tfp = new TextFieldParser(new MemoryStream(Encoding.UTF8.GetBytes(line)));
+            tfp.HasFieldsEnclosedInQuotes = hasQuotes;
+            tfp.SetDelimiters(separators);
+
+            try
+            {
+                return tfp.ReadFields();
+            }
+            catch (Exception ex)
+            {
+                ex.ToString();
+                return line.Split(separators, StringSplitOptions.None);
+            }
+        }
+
+        private static string[] Split(CompareResults cmp, string line)
+        {
+            return Split(cmp.Separators, true, line);
+        }
+
         /// <summary>
         /// Process two block of lines for comparison
         /// </summary>
@@ -108,8 +131,8 @@ namespace NumDiffLib
                 // read headers
                 if (cmp.ReadHeaders && firstLineBlock == 0)
                 {
-                    string[] fields1 = lineBlock1[0].Split(cmp.Separators, StringSplitOptions.None);
-                    string[] fields2 = lineBlock2[0].Split(cmp.Separators, StringSplitOptions.None);
+                    string[] fields1 = Split(cmp, lineBlock1[0]);
+                    string[] fields2 = Split(cmp, lineBlock2[0]);
 
                     if (fields1.Length >= fields2.Length)
                     {
@@ -127,10 +150,10 @@ namespace NumDiffLib
                     int realRow = firstLineBlock + row;
 
                     string line1 = lineBlock1[row];
-                    string[] fields1 = line1.Split(cmp.Separators, StringSplitOptions.None);
+                    string[] fields1 = Split(cmp, line1);
 
                     string line2 = lineBlock2[row];
-                    string[] fields2 = line2.Split(cmp.Separators, StringSplitOptions.None);
+                    string[] fields2 = Split(cmp, line2);
 
                     if (fields1.Length != fields2.Length)
                     {
@@ -152,11 +175,6 @@ namespace NumDiffLib
                         string field2 = fields2[col];
                         double d1, d2;
                         bool eql = false;
-
-                        if (realRow == 3329 && field1 == "na")
-                        {
-
-                        }
 
                         if (TryParseTollerance(field1, out d1) && double.TryParse(field2, NumberStyles.Any, _nfiDot, out d2))
                         {
@@ -228,7 +246,7 @@ namespace NumDiffLib
         /// <param name="separators"></param>
         /// <param name="row"></param>
         /// <returns></returns>
-        public static List<string[]> ReadBlock(string filePath, string[] separators, int row, int rowCount)
+        public static List<string[]> ReadBlock(string filePath, CompareResults cmp, int row, int rowCount)
         {
             try
             {
@@ -243,7 +261,7 @@ namespace NumDiffLib
                     {
                         if (countLines >= row && countLines < rowEnd)
                         {
-                            string[] fields = line.Split(separators, StringSplitOptions.None);
+                            string[] fields = Split(cmp, line);
                             res.Add(fields);
                         }
                         countLines++;
