@@ -39,9 +39,9 @@ namespace NumDiff
         private void MainForm_Shown(object sender, EventArgs e)
         {
             //%prodebug%
-            //SetFilePath(1, @"C:\Users\barbarie\Desktop\util\alva\projects\workspace\utility\test_alvaModel\single_test\mtxYPred.txt");
-            //SetFilePath(2, @"C:\Users\barbarie\Desktop\util\alva\projects\workspace\utility\test_alvaModel\single_test\zzz_BMF_OLS_YPred.txt");
-            //DoCompare();
+            SetFilePath(1, @"C:\Users\matte\Desktop\old.txt");
+            SetFilePath(2, @"C:\Users\matte\Desktop\new.txt");
+            DoCompare();
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -59,6 +59,29 @@ namespace NumDiff
             {
                 ex.ToString();
             }
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == (Keys.Control | Keys.F))
+            {
+                if (searchToolStripMenuItem.Enabled)
+                    searchToolStripMenuItem_Click(null, null);
+                return true;
+            }
+            if (keyData == (Keys.Control | Keys.G))
+            {
+                if (goToToolStripMenuItem.Enabled)
+                    goToToolStripMenuItem_Click(null, null);
+                return true;
+            }
+            if (keyData == (Keys.Control | Keys.D))
+            {
+                if (showDifferencesToolStripMenuItem.Enabled)
+                    showDifferencesToolStripMenuItem_Click(null, null);
+                return true;
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         #endregion
@@ -410,6 +433,19 @@ namespace NumDiff
             MessageBox.Show("String not found", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
+        private void showDifferencesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_cmp != null && _cmp.Differences.Count > 0)
+            {
+                string msg = "";
+                for (int i = 0; i < _cmp.Differences.Count; i++) //%%% ordinare per riga/colonna
+                {
+                    msg += (_cmp.Differences.ElementAt(i).Row + 1) + ", " + (_cmp.Differences.ElementAt(i).Col + 1) + "\n";
+                }
+                MessageBox.Show(msg);
+            }
+        }
+
         #endregion
 
         #region grid event
@@ -446,19 +482,6 @@ namespace NumDiff
                 e.CellStyle.BackColor = Color.Yellow;
             else
                 e.CellStyle.BackColor = SystemColors.Window;
-        }
-
-        private void showDifferencesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (_cmp != null && _cmp.Differences.Count > 0)
-            {
-                string msg = "";
-                for (int i = 0; i < _cmp.Differences.Count; i++) //%%% ordinare per riga/colonna
-                {
-                    msg += (_cmp.Differences.ElementAt(i).Row + 1) + ", " + (_cmp.Differences.ElementAt(i).Col + 1) + "\n";
-                }
-                MessageBox.Show(msg);
-            }
         }
 
         private void dataGridView2_CellStateChanged(object sender, DataGridViewCellStateChangedEventArgs e)
