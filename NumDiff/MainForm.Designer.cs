@@ -53,6 +53,7 @@
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.goToToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.searchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showDifferencesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripStatusRowsCols = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
@@ -60,7 +61,6 @@
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusCurrCellLeft = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusCurrCellRight = new System.Windows.Forms.ToolStripStatusLabel();
-            this.showDifferencesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panelMain.SuspendLayout();
             this.panelGrids.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -307,6 +307,13 @@
             this.searchToolStripMenuItem.Text = "Search";
             this.searchToolStripMenuItem.Click += new System.EventHandler(this.searchToolStripMenuItem_Click);
             // 
+            // showDifferencesToolStripMenuItem
+            // 
+            this.showDifferencesToolStripMenuItem.Name = "showDifferencesToolStripMenuItem";
+            this.showDifferencesToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.showDifferencesToolStripMenuItem.Text = "Show Differences";
+            this.showDifferencesToolStripMenuItem.Click += new System.EventHandler(this.showDifferencesToolStripMenuItem_Click);
+            // 
             // toolStripStatusRowsCols
             // 
             this.toolStripStatusRowsCols.Name = "toolStripStatusRowsCols";
@@ -358,13 +365,6 @@
             this.toolStripStatusCurrCellRight.Size = new System.Drawing.Size(155, 17);
             this.toolStripStatusCurrCellRight.Text = "toolStripStatusCurrCellRight";
             // 
-            // showDifferencesToolStripMenuItem
-            // 
-            this.showDifferencesToolStripMenuItem.Name = "showDifferencesToolStripMenuItem";
-            this.showDifferencesToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
-            this.showDifferencesToolStripMenuItem.Text = "Show Differences";
-            this.showDifferencesToolStripMenuItem.Click += new System.EventHandler(this.showDifferencesToolStripMenuItem_Click);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -380,6 +380,7 @@
             this.Text = "NumDiff";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Shown += new System.EventHandler(this.MainForm_Shown);
+            this.Resize += new System.EventHandler(this.MainForm_Resize);
             this.panelMain.ResumeLayout(false);
             this.panelGrids.ResumeLayout(false);
             this.panel2.ResumeLayout(false);

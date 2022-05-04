@@ -25,10 +25,11 @@ namespace NumDiff
         private List<string[]>[] _readBlockRows = new List<string[]>[2];
         private CompareResults _cmp;
 
+        #region form
         public MainForm()
         {
             InitializeComponent();
-            
+
             this.Text = APP_NAME;
             dataGridView1.VirtualMode = true;
             dataGridView2.VirtualMode = true;
@@ -47,6 +48,20 @@ namespace NumDiff
         {
             NumDiff.Properties.Settings.Default.Save();
         }
+
+        private void MainForm_Resize(object sender, EventArgs e)
+        {
+            try
+            {
+                panel1.Width = this.Width / 2;
+            }
+            catch (Exception ex)
+            {
+                ex.ToString();
+            }
+        }
+
+        #endregion
 
         /// <summary>
         /// Reset the UI
