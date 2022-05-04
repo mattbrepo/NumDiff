@@ -41,8 +41,9 @@
             this.textBoxRow.Location = new System.Drawing.Point(62, 20);
             this.textBoxRow.Name = "textBoxRow";
             this.textBoxRow.Size = new System.Drawing.Size(137, 20);
-            this.textBoxRow.TabIndex = 9;
+            this.textBoxRow.TabIndex = 0;
             this.textBoxRow.Text = "1";
+            this.textBoxRow.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxRow_KeyPress);
             // 
             // labelRow
             // 
@@ -58,8 +59,9 @@
             this.textBoxCol.Location = new System.Drawing.Point(62, 46);
             this.textBoxCol.Name = "textBoxCol";
             this.textBoxCol.Size = new System.Drawing.Size(137, 20);
-            this.textBoxCol.TabIndex = 11;
+            this.textBoxCol.TabIndex = 1;
             this.textBoxCol.Text = "1";
+            this.textBoxCol.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxCol_KeyPress);
             // 
             // labelCol
             // 
@@ -75,7 +77,7 @@
             this.buttonCancel.Location = new System.Drawing.Point(43, 83);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
-            this.buttonCancel.TabIndex = 13;
+            this.buttonCancel.TabIndex = 3;
             this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
             this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
@@ -85,7 +87,7 @@
             this.buttonOk.Location = new System.Drawing.Point(124, 83);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(75, 23);
-            this.buttonOk.TabIndex = 0;
+            this.buttonOk.TabIndex = 2;
             this.buttonOk.Text = "Ok";
             this.buttonOk.UseVisualStyleBackColor = true;
             this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);

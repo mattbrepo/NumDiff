@@ -42,5 +42,21 @@ namespace NumDiff
             textBoxRow.Text = (row + 1).ToString();
             textBoxCol.Text = (col + 1).ToString();
         }
+
+        private void textBoxRow_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Return)
+            {
+                buttonOk_Click(null, null);
+            }
+        }
+
+        private void textBoxCol_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Return)
+            {
+                buttonOk_Click(null, null);
+            }
+        }
     }
 }
