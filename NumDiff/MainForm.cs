@@ -17,7 +17,8 @@ namespace NumDiff
         private const string APP_NAME = "NumDiff v0.6";
         private const int MAX_FILE_PATH_VISIBLE = 50;
         private const int READ_BLOCK_LINES = 50;
-        
+        private const int GRID_FIRST_ROW = 1;
+
         private string _filePath1, _filePath2, _lastSearch;
         private int _lastGoToRow, _lastGoToCol;
 
@@ -238,6 +239,12 @@ namespace NumDiff
             dataGridView2.ColumnCount = cols;
             dataGridView2.RowCount = rows;
 
+            for (int row = GRID_FIRST_ROW; row < rows; row++)
+            {
+                dataGridView1.Rows[row].HeaderCell.Value = "" + row;
+                dataGridView2.Rows[row].HeaderCell.Value = "" + row;
+            }
+
             toolStripStatusRowsCols.Text = "Rows: " + rows + ", Cols: " + cols; //%toolstrip%
             vScrollBarMain.Maximum = rows;
             hScrollBarMain.Maximum = cols;
@@ -260,6 +267,7 @@ namespace NumDiff
                 return "";
             if (col < 0 || col >= _readBlockRows[fileNum - 1][intRow].Length)
                 return "";
+
             return _readBlockRows[fileNum - 1][intRow][col];
         }
 
@@ -274,16 +282,6 @@ namespace NumDiff
                 _readBlockRows[fileNum - 1] = NumDiffUtil.ReadBlock(fileNum == 1 ? _filePath1 : _filePath2, _cmp, row, visibleRowCount);
                 _readBlockRowIndex[fileNum - 1] = row;
             }
-        }
-
-        private void dataGridView1_ColumnAdded(object sender, DataGridViewColumnEventArgs e)
-        {
-            e.Column.FillWeight = 1; // https://social.msdn.microsoft.com/Forums/windows/en-US/327ff3e0-098c-4657-9af4-20d31fe5d6f0/sum-of-the-columns-fillweight-values-cannot-exceed-65535?forum=winformsdatacontrols
-        }
-
-        private void dataGridView2_ColumnAdded(object sender, DataGridViewColumnEventArgs e)
-        {
-            e.Column.FillWeight = 1; // https://social.msdn.microsoft.com/Forums/windows/en-US/327ff3e0-098c-4657-9af4-20d31fe5d6f0/sum-of-the-columns-fillweight-values-cannot-exceed-65535?forum=winformsdatacontrols
         }
 
         #region drag drop
@@ -449,6 +447,16 @@ namespace NumDiff
         #endregion
 
         #region grid event
+
+        private void dataGridView1_ColumnAdded(object sender, DataGridViewColumnEventArgs e)
+        {
+            e.Column.FillWeight = 1; // https://social.msdn.microsoft.com/Forums/windows/en-US/327ff3e0-098c-4657-9af4-20d31fe5d6f0/sum-of-the-columns-fillweight-values-cannot-exceed-65535?forum=winformsdatacontrols
+        }
+
+        private void dataGridView2_ColumnAdded(object sender, DataGridViewColumnEventArgs e)
+        {
+            e.Column.FillWeight = 1; // https://social.msdn.microsoft.com/Forums/windows/en-US/327ff3e0-098c-4657-9af4-20d31fe5d6f0/sum-of-the-columns-fillweight-values-cannot-exceed-65535?forum=winformsdatacontrols
+        }
 
         private void vScrollBarMain_Scroll(object sender, ScrollEventArgs e)
         {

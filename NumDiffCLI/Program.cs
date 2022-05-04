@@ -146,7 +146,6 @@ namespace NumDiffCLI
             string oldHeader = "";
             for (int i = 0; i < diffs.Count; i++)
             {
-
                 string header = "ROW";
                 string values1 = "" + diffs[i].Key;
                 string values2 = "" + diffs[i].Key;
