@@ -17,7 +17,6 @@ namespace NumDiff
         private const string APP_NAME = "NumDiff v0.6";
         private const int MAX_FILE_PATH_VISIBLE = 50;
         private const int READ_BLOCK_LINES = 50;
-        private const int GRID_FIRST_ROW = 1;
 
         private string _filePath1, _filePath2, _lastSearch;
         private int _lastGoToRow, _lastGoToCol;
@@ -40,8 +39,8 @@ namespace NumDiff
         private void MainForm_Shown(object sender, EventArgs e)
         {
             //%prodebug%
-            SetFilePath(1, @"C:\Users\matte\Desktop\old.txt");
-            SetFilePath(2, @"C:\Users\matte\Desktop\new.txt");
+            SetFilePath(1, @"C:\Users\matte\Desktop\a_old.txt");
+            SetFilePath(2, @"C:\Users\matte\Desktop\a_new.txt");
             DoCompare();
         }
 
@@ -124,7 +123,13 @@ namespace NumDiff
 
             System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.WaitCursor;
 
-            _cmp = new CompareResults() { Tollerance = NumDiff.Properties.Settings.Default.Tollerance, Separators = GetSeparators(), FilePath1 = _filePath1, FilePath2 = _filePath2 };
+            _cmp = new CompareResults() {
+                Tollerance = NumDiff.Properties.Settings.Default.Tollerance,
+                Separators = GetSeparators(),
+                FilePath1 = _filePath1,
+                FilePath2 = _filePath2,
+                ReadHeaders = true
+            };
             if (!NumDiffUtil.ReadCompare(_cmp))
             {
                 System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.Default;
@@ -136,9 +141,9 @@ namespace NumDiff
 
             // read first block (it could be optimized)
             UpdateReadBlock(0);
-
+            
             // set UI data
-            SetData(_cmp.GetMaxCountRows(), _cmp.GetMaxCountCols());
+            SetData();
 
             //%toolstrip%
             if (_cmp.Differences.Count == 0)
@@ -228,26 +233,56 @@ namespace NumDiff
         /// </summary>
         /// <param name="rows"></param>
         /// <param name="cols"></param>
-        private void SetData(int rows, int cols)
+        private void SetData()
         {
-            // reset data grid
+            // reset
             this.Text = APP_NAME + " - " + GetOnlyLastPart(_filePath1) + " - " + GetOnlyLastPart(_filePath2);
-
             ResetAll(false);
-            dataGridView1.ColumnCount = cols;
-            dataGridView1.RowCount = rows;
-            dataGridView2.ColumnCount = cols;
-            dataGridView2.RowCount = rows;
 
-            for (int row = GRID_FIRST_ROW; row < rows; row++)
-            {
-                dataGridView1.Rows[row].HeaderCell.Value = "" + row;
-                dataGridView2.Rows[row].HeaderCell.Value = "" + row;
-            }
+            // set datagrid rows and columns
+            SetDataGrid(dataGridView1);
+            SetDataGrid(dataGridView2);
 
+            // final setup
+            int rows = _cmp.GetMaxCountRows();
+            int cols = _cmp.GetMaxCountCols();
             toolStripStatusRowsCols.Text = "Rows: " + rows + ", Cols: " + cols; //%toolstrip%
             vScrollBarMain.Maximum = rows;
             hScrollBarMain.Maximum = cols;
+        }
+
+        private void SetDataGrid(DataGridView dgv)
+        {
+            int rows = _cmp.GetMaxCountRows();
+            if (NumDiff.Properties.Settings.Default.Header)
+                rows--;
+            int cols = _cmp.GetMaxCountCols();
+
+            // first row done separately because it's necessary to set CurrentCell to use BeginEdit
+            dgv.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { HeaderText = _cmp.Headers[0], Name = "Hname" + 0.ToString() });
+            dgv.RowCount = 1;
+            dgv.CurrentCell = dgv.Rows[0].Cells[0]; // required by BeginEdit
+
+            dgv.BeginEdit(false);
+
+            // column header
+            for (int col = 1; col < cols; col++)
+            {
+                string header = "";
+                if (col < _cmp.Headers.Count)
+                    header = _cmp.Headers[col];
+
+                dgv.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { HeaderText = header, Name = "Hname" + col.ToString() });
+            }
+            dgv.ColumnHeadersVisible = true;
+            
+            // row header
+            dgv.RowCount = rows;
+            for (int row = 0; row < rows; row++)
+            {
+                dgv.Rows[row].HeaderCell.Value = "" + (row + 1);
+            }
+            dgv.EndEdit();
         }
 
         private string GetCellValue(int fileNum, int row, int col)
@@ -262,6 +297,9 @@ namespace NumDiff
             }
 
             int intRow = row - _readBlockRowIndex[fileNum - 1];
+
+            if (NumDiff.Properties.Settings.Default.Header)
+                intRow++;
 
             if (intRow < 0 || intRow >= _readBlockRows[fileNum - 1].Count)
                 return "";

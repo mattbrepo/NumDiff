@@ -49,5 +49,17 @@ namespace NumDiff.Properties {
                 this["Tollerance"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool Header {
+            get {
+                return ((bool)(this["Header"]));
+            }
+            set {
+                this["Header"] = value;
+            }
+        }
     }
 }
