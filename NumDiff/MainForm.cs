@@ -39,9 +39,9 @@ namespace NumDiff
         private void MainForm_Shown(object sender, EventArgs e)
         {
             //%prodebug%
-            SetFilePath(1, @"C:\Users\matte\Desktop\a_old.txt");
-            SetFilePath(2, @"C:\Users\matte\Desktop\a_new.txt");
-            DoCompare();
+            //SetFilePath(1, @"C:\Users\matte\Desktop\old.txt");
+            //SetFilePath(2, @"C:\Users\matte\Desktop\new.txt");
+            //DoCompare();
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -418,6 +418,20 @@ namespace NumDiff
             DoCompare();
         }
 
+        private void GoTo(int row, int col)
+        {
+            try
+            {
+                dataGridView1.CurrentCell = dataGridView1.Rows[row].Cells[col];
+                dataGridView2.CurrentCell = dataGridView2.Rows[row].Cells[col];
+                _lastGoToRow = row;
+                _lastGoToCol = col;
+            }
+            catch
+            {
+            }
+        }
+
         private void goToToolStripMenuItem_Click(object sender, EventArgs e)
         {
             GoToForm gf = new GoToForm();
@@ -429,16 +443,8 @@ namespace NumDiff
             int row, col;
             if (!gf.GetRowCol(out row, out col))
                 return;
-            try
-            {
-                dataGridView1.CurrentCell = dataGridView1.Rows[row].Cells[col];
-                dataGridView2.CurrentCell = dataGridView2.Rows[row].Cells[col];
-                _lastGoToRow = row;
-                _lastGoToCol = col;
-            }
-            catch
-            {
-            }
+
+            GoTo(row, col);
         }
         
         private void searchToolStripMenuItem_Click(object sender, EventArgs e)
@@ -471,14 +477,22 @@ namespace NumDiff
 
         private void showDifferencesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (_cmp != null && _cmp.Differences.Count > 0)
+            if (_cmp != null && _cmp.OrderedDifferences.Count > 0)
             {
-                string msg = "";
-                for (int i = 0; i < _cmp.Differences.Count; i++) //%%% ordinare per riga/colonna
+                DifferencesForm df = new DifferencesForm();
+                df.SetCompareResults(_cmp);
+                DialogResult dr = df.ShowDialog(this);
+                if (dr == DialogResult.OK)
                 {
-                    msg += (_cmp.Differences.ElementAt(i).Row + 1) + ", " + (_cmp.Differences.ElementAt(i).Col + 1) + "\n";
+                    int row, col;
+                    row = _cmp.OrderedDifferences[df.OrdDiffIdx].Row - 1;
+                    col = _cmp.OrderedDifferences[df.OrdDiffIdx].Col;
+                    GoTo(row, col);
                 }
-                MessageBox.Show(msg);
+            }
+            else
+            {
+                MessageBox.Show("No differences to show");
             }
         }
 
@@ -516,7 +530,7 @@ namespace NumDiff
 
         private void dataGridView2_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            if (_cmp.HasDifference(e.RowIndex, e.ColumnIndex))
+            if (_cmp.HasDifference(e.RowIndex + 1, e.ColumnIndex))
                 e.CellStyle.BackColor = Color.Yellow;
             else
                 e.CellStyle.BackColor = SystemColors.Window;
@@ -524,7 +538,7 @@ namespace NumDiff
 
         private void dataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            if (_cmp.HasDifference(e.RowIndex, e.ColumnIndex))
+            if (_cmp.HasDifference(e.RowIndex + 1, e.ColumnIndex))
                 e.CellStyle.BackColor = Color.Yellow;
             else
                 e.CellStyle.BackColor = SystemColors.Window;

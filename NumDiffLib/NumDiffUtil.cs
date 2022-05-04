@@ -236,6 +236,9 @@ namespace NumDiffLib
                 return false;
             }
 
+            // order differences
+            cmp.OrderedDifferences = cmp.Differences.OrderBy(cell => cell.Row).ThenBy(cell => cell.Col).ToList();
+
             return true;
         }
 

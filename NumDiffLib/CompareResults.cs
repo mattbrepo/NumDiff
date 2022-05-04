@@ -34,6 +34,7 @@ namespace NumDiffLib
         public List<string> Headers { get; set; }
 
         public ConcurrentBag<DifferentCell> Differences { get; set; }
+        public List<DifferentCell> OrderedDifferences { get; set; }
         public ConcurrentBag<string> Errors { get; set; }
 
         public CompareResults()
