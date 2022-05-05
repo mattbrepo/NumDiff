@@ -79,6 +79,5 @@ namespace NumDiff
             if (e.KeyValue == 13)
                 CheckAndClose();
         }
-
     }
 }

@@ -81,6 +81,7 @@
             this.Controls.Add(this.textBoxSearch);
             this.Controls.Add(this.labelSearch);
             this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "SearchForm";
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

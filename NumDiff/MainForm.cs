@@ -39,9 +39,9 @@ namespace NumDiff
         private void MainForm_Shown(object sender, EventArgs e)
         {
             //%prodebug%
-            SetFilePath(1, @"C:\Users\matte\Desktop\old.txt");
-            SetFilePath(2, @"C:\Users\matte\Desktop\new.txt");
-            DoCompare();
+            //SetFilePath(1, @"C:\Users\matte\Desktop\old.txt");
+            //SetFilePath(2, @"C:\Users\matte\Desktop\new.txt");
+            //DoCompare(true);
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -120,10 +120,19 @@ namespace NumDiff
         /// <summary>
         /// Start the compare job
         /// </summary>
-        private void DoCompare()
+        private void DoCompare(bool showImport)
         {
             if (_filePath1 == null || _filePath2 == null)
                 return;
+
+            if (showImport)
+            {
+                ImportForm imf = new ImportForm();
+                imf.FilePath1 = _filePath1;
+                DialogResult dr = imf.ShowDialog(this);
+                if (dr != DialogResult.OK)
+                    return;
+            }
 
             System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.WaitCursor;
 
@@ -348,7 +357,7 @@ namespace NumDiff
             {
                 SetFilePath(1, files[0]);
             }
-            DoCompare();
+            DoCompare(true);
         }
 
         private void dataGridView2_DragEnter(object sender, DragEventArgs e)
@@ -372,7 +381,7 @@ namespace NumDiff
             {
                 SetFilePath(2, files[0]);
             }
-            DoCompare();
+            DoCompare(true);
         } 
         #endregion
 
@@ -385,7 +394,7 @@ namespace NumDiff
             if (ofd.ShowDialog() != DialogResult.OK)
                 return;
             SetFilePath(1, ofd.FileName);
-            DoCompare();
+            DoCompare(true);
         }
 
         private void openFile2ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -395,7 +404,7 @@ namespace NumDiff
             if (ofd.ShowDialog() != DialogResult.OK)
                 return;
             SetFilePath(2, ofd.FileName);
-            DoCompare();
+            DoCompare(true);
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -408,7 +417,7 @@ namespace NumDiff
             OptionsForm of = new OptionsForm();
             DialogResult dr = of.ShowDialog(this);
             if (dr == DialogResult.OK)
-                DoCompare();
+                DoCompare(true);
         }
 
         private void resetToolStripMenuItem_Click(object sender, EventArgs e)
@@ -419,7 +428,7 @@ namespace NumDiff
         private void refreshToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ResetAll(false);
-            DoCompare();
+            DoCompare(true);
         }
 
         private void GoTo(int row, int col)

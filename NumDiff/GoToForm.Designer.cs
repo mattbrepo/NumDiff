@@ -104,6 +104,7 @@
             this.Controls.Add(this.textBoxRow);
             this.Controls.Add(this.labelRow);
             this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "GoToForm";
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

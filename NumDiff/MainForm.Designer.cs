@@ -53,6 +53,8 @@
             this.goToToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.searchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.differencesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.hideEqualColumnsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.hideEqualRowsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripStatusRowsCols = new System.Windows.Forms.ToolStripStatusLabel();
@@ -62,8 +64,6 @@
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusCurrCellLeft = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusCurrCellRight = new System.Windows.Forms.ToolStripStatusLabel();
-            this.hideEqualColumnsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.hideEqualRowsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panelMain.SuspendLayout();
             this.panelGrids.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -82,7 +82,7 @@
             this.panelMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelMain.Location = new System.Drawing.Point(0, 24);
             this.panelMain.Name = "panelMain";
-            this.panelMain.Size = new System.Drawing.Size(785, 352);
+            this.panelMain.Size = new System.Drawing.Size(994, 500);
             this.panelMain.TabIndex = 4;
             // 
             // panelGrids
@@ -93,7 +93,7 @@
             this.panelGrids.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelGrids.Location = new System.Drawing.Point(0, 0);
             this.panelGrids.Name = "panelGrids";
-            this.panelGrids.Size = new System.Drawing.Size(768, 335);
+            this.panelGrids.Size = new System.Drawing.Size(977, 483);
             this.panelGrids.TabIndex = 10;
             // 
             // panel2
@@ -101,9 +101,9 @@
             this.panel2.Controls.Add(this.dataGridView2);
             this.panel2.Controls.Add(this.textBox2);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(383, 0);
+            this.panel2.Location = new System.Drawing.Point(503, 0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(385, 335);
+            this.panel2.Size = new System.Drawing.Size(474, 483);
             this.panel2.TabIndex = 8;
             // 
             // dataGridView2
@@ -127,7 +127,7 @@
             this.dataGridView2.RowHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridView2.RowHeadersWidth = 50;
             this.dataGridView2.ScrollBars = System.Windows.Forms.ScrollBars.None;
-            this.dataGridView2.Size = new System.Drawing.Size(385, 315);
+            this.dataGridView2.Size = new System.Drawing.Size(474, 463);
             this.dataGridView2.TabIndex = 5;
             this.dataGridView2.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dataGridView2_CellFormatting);
             this.dataGridView2.CellStateChanged += new System.Windows.Forms.DataGridViewCellStateChangedEventHandler(this.dataGridView2_CellStateChanged);
@@ -143,14 +143,14 @@
             this.textBox2.Location = new System.Drawing.Point(0, 0);
             this.textBox2.Name = "textBox2";
             this.textBox2.ReadOnly = true;
-            this.textBox2.Size = new System.Drawing.Size(385, 20);
+            this.textBox2.Size = new System.Drawing.Size(474, 20);
             this.textBox2.TabIndex = 4;
             // 
             // splitter1
             // 
-            this.splitter1.Location = new System.Drawing.Point(380, 0);
+            this.splitter1.Location = new System.Drawing.Point(500, 0);
             this.splitter1.Name = "splitter1";
-            this.splitter1.Size = new System.Drawing.Size(3, 335);
+            this.splitter1.Size = new System.Drawing.Size(3, 483);
             this.splitter1.TabIndex = 7;
             this.splitter1.TabStop = false;
             // 
@@ -161,7 +161,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(380, 335);
+            this.panel1.Size = new System.Drawing.Size(500, 483);
             this.panel1.TabIndex = 4;
             // 
             // dataGridView1
@@ -185,7 +185,7 @@
             this.dataGridView1.RowHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.dataGridView1.RowHeadersWidth = 50;
             this.dataGridView1.ScrollBars = System.Windows.Forms.ScrollBars.None;
-            this.dataGridView1.Size = new System.Drawing.Size(380, 315);
+            this.dataGridView1.Size = new System.Drawing.Size(500, 463);
             this.dataGridView1.TabIndex = 2;
             this.dataGridView1.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dataGridView1_CellFormatting);
             this.dataGridView1.CellStateChanged += new System.Windows.Forms.DataGridViewCellStateChangedEventHandler(this.dataGridView1_CellStateChanged);
@@ -201,24 +201,24 @@
             this.textBox1.Location = new System.Drawing.Point(0, 0);
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(380, 20);
+            this.textBox1.Size = new System.Drawing.Size(500, 20);
             this.textBox1.TabIndex = 0;
             // 
             // hScrollBarMain
             // 
             this.hScrollBarMain.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.hScrollBarMain.Location = new System.Drawing.Point(0, 335);
+            this.hScrollBarMain.Location = new System.Drawing.Point(0, 483);
             this.hScrollBarMain.Name = "hScrollBarMain";
-            this.hScrollBarMain.Size = new System.Drawing.Size(768, 17);
+            this.hScrollBarMain.Size = new System.Drawing.Size(977, 17);
             this.hScrollBarMain.TabIndex = 9;
             this.hScrollBarMain.Scroll += new System.Windows.Forms.ScrollEventHandler(this.hScrollBarMain_Scroll);
             // 
             // vScrollBarMain
             // 
             this.vScrollBarMain.Dock = System.Windows.Forms.DockStyle.Right;
-            this.vScrollBarMain.Location = new System.Drawing.Point(768, 0);
+            this.vScrollBarMain.Location = new System.Drawing.Point(977, 0);
             this.vScrollBarMain.Name = "vScrollBarMain";
-            this.vScrollBarMain.Size = new System.Drawing.Size(17, 352);
+            this.vScrollBarMain.Size = new System.Drawing.Size(17, 500);
             this.vScrollBarMain.TabIndex = 7;
             this.vScrollBarMain.Scroll += new System.Windows.Forms.ScrollEventHandler(this.vScrollBarMain_Scroll);
             // 
@@ -230,7 +230,7 @@
             this.settingsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(785, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(994, 24);
             this.menuStrip1.TabIndex = 5;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -314,6 +314,20 @@
             this.differencesToolStripMenuItem.Text = "Differences (Ctrl + D)";
             this.differencesToolStripMenuItem.Click += new System.EventHandler(this.differencesToolStripMenuItem_Click);
             // 
+            // hideEqualColumnsToolStripMenuItem
+            // 
+            this.hideEqualColumnsToolStripMenuItem.Name = "hideEqualColumnsToolStripMenuItem";
+            this.hideEqualColumnsToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.hideEqualColumnsToolStripMenuItem.Text = "Hide equal columns";
+            this.hideEqualColumnsToolStripMenuItem.Click += new System.EventHandler(this.hideEqualColumnsToolStripMenuItem_Click);
+            // 
+            // hideEqualRowsToolStripMenuItem
+            // 
+            this.hideEqualRowsToolStripMenuItem.Name = "hideEqualRowsToolStripMenuItem";
+            this.hideEqualRowsToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.hideEqualRowsToolStripMenuItem.Text = "Hide equal rows";
+            this.hideEqualRowsToolStripMenuItem.Click += new System.EventHandler(this.hideEqualRowsToolStripMenuItem_Click);
+            // 
             // settingsToolStripMenuItem
             // 
             this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -344,9 +358,9 @@
             this.toolStripStatusLabel2,
             this.toolStripStatusCurrCellLeft,
             this.toolStripStatusCurrCellRight});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 376);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 524);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(785, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(994, 22);
             this.statusStrip1.TabIndex = 3;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -380,25 +394,11 @@
             this.toolStripStatusCurrCellRight.Size = new System.Drawing.Size(155, 17);
             this.toolStripStatusCurrCellRight.Text = "toolStripStatusCurrCellRight";
             // 
-            // hideEqualColumnsToolStripMenuItem
-            // 
-            this.hideEqualColumnsToolStripMenuItem.Name = "hideEqualColumnsToolStripMenuItem";
-            this.hideEqualColumnsToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
-            this.hideEqualColumnsToolStripMenuItem.Text = "Hide equal columns";
-            this.hideEqualColumnsToolStripMenuItem.Click += new System.EventHandler(this.hideEqualColumnsToolStripMenuItem_Click);
-            // 
-            // hideEqualRowsToolStripMenuItem
-            // 
-            this.hideEqualRowsToolStripMenuItem.Name = "hideEqualRowsToolStripMenuItem";
-            this.hideEqualRowsToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
-            this.hideEqualRowsToolStripMenuItem.Text = "Hide equal rows";
-            this.hideEqualRowsToolStripMenuItem.Click += new System.EventHandler(this.hideEqualRowsToolStripMenuItem_Click);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(785, 398);
+            this.ClientSize = new System.Drawing.Size(994, 546);
             this.Controls.Add(this.panelMain);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
