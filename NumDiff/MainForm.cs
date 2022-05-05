@@ -111,7 +111,10 @@ namespace NumDiff
             _lastGoToRow = 0;
             _lastGoToCol = 0;
             _lastSearch = "";
-            hideEqualColumnsToolStripMenuItem.Checked = false; //%future% it would be better not to reset it
+
+            //%future% it would be better not to reset them
+            hideEqualColumnsToolStripMenuItem.Checked = false;
+            hideEqualRowsToolStripMenuItem.Checked = false;
         }
 
         /// <summary>
@@ -552,7 +555,9 @@ namespace NumDiff
             if (dataGridView1.ColumnCount != dataGridView2.ColumnCount || dataGridView1.ColumnCount <= 0 || _cmp.Differences == null)
                 return;
 
+            dataGridView1.CurrentCell = dataGridView1.FirstDisplayedCell;
             dataGridView1.BeginEdit(false);
+            dataGridView2.CurrentCell = dataGridView2.FirstDisplayedCell;
             dataGridView2.BeginEdit(false);
 
             if (hideEqualColumnsToolStripMenuItem.Checked)
@@ -573,6 +578,43 @@ namespace NumDiff
                 {
                     dataGridView1.Columns[col].Visible = true;
                     dataGridView2.Columns[col].Visible = true;
+                }
+            }
+
+            dataGridView1.EndEdit();
+            dataGridView2.EndEdit();
+        }
+
+        private void hideEqualRowsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            hideEqualRowsToolStripMenuItem.Checked = !hideEqualRowsToolStripMenuItem.Checked;
+
+            if (dataGridView1.RowCount != dataGridView2.RowCount || dataGridView1.ColumnCount <= 0 || _cmp.Differences == null)
+                return;
+
+            dataGridView1.CurrentCell = dataGridView1.FirstDisplayedCell;
+            dataGridView1.BeginEdit(false);
+            dataGridView2.CurrentCell = dataGridView2.FirstDisplayedCell;
+            dataGridView2.BeginEdit(false);
+
+            if (hideEqualRowsToolStripMenuItem.Checked)
+            {
+                List<int> rows = _cmp.Differences.Select(x => x.Row).Distinct().OrderBy(x => x).ToList();
+                for (int row = 0; row < dataGridView1.RowCount; row++)
+                {
+                    if (!rows.Contains(row + 1))
+                    {
+                        dataGridView1.Rows[row].Visible = false;
+                        dataGridView2.Rows[row].Visible = false;
+                    }
+                }
+            }
+            else
+            {
+                for (int row = 0; row < dataGridView1.RowCount; row++)
+                {
+                    dataGridView1.Rows[row].Visible = true;
+                    dataGridView2.Rows[row].Visible = true;
                 }
             }
 

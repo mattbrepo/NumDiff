@@ -63,6 +63,7 @@
             this.toolStripStatusCurrCellLeft = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusCurrCellRight = new System.Windows.Forms.ToolStripStatusLabel();
             this.hideEqualColumnsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.hideEqualRowsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panelMain.SuspendLayout();
             this.panelGrids.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -284,7 +285,8 @@
             this.goToToolStripMenuItem,
             this.searchToolStripMenuItem,
             this.differencesToolStripMenuItem,
-            this.hideEqualColumnsToolStripMenuItem});
+            this.hideEqualColumnsToolStripMenuItem,
+            this.hideEqualRowsToolStripMenuItem});
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.viewToolStripMenuItem.Text = "View";
@@ -383,6 +385,13 @@
             this.hideEqualColumnsToolStripMenuItem.Text = "Hide equal columns";
             this.hideEqualColumnsToolStripMenuItem.Click += new System.EventHandler(this.hideEqualColumnsToolStripMenuItem_Click);
             // 
+            // hideEqualRowsToolStripMenuItem
+            // 
+            this.hideEqualRowsToolStripMenuItem.Name = "hideEqualRowsToolStripMenuItem";
+            this.hideEqualRowsToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.hideEqualRowsToolStripMenuItem.Text = "Hide equal rows";
+            this.hideEqualRowsToolStripMenuItem.Click += new System.EventHandler(this.hideEqualRowsToolStripMenuItem_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -451,6 +460,7 @@
         private System.Windows.Forms.ToolStripMenuItem searchToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem differencesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem hideEqualColumnsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem hideEqualRowsToolStripMenuItem;
     }
 }
 
