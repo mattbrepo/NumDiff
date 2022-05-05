@@ -131,7 +131,10 @@ namespace NumDiff
                 imf.FilePath1 = _filePath1;
                 DialogResult dr = imf.ShowDialog(this);
                 if (dr != DialogResult.OK)
+                {
+                    ResetAll(true);
                     return;
+                }
             }
 
             System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.WaitCursor;

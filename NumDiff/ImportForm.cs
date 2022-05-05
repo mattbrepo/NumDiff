@@ -44,6 +44,8 @@ namespace NumDiff
             if (checkBoxSemicolon.Checked)
                 NumDiff.Properties.Settings.Default.Separators.Add(";");
 
+            NumDiff.Properties.Settings.Default.Header = checkBoxHasHeader.Checked;
+
             NumDiff.Properties.Settings.Default.Save();
 
             this.DialogResult = DialogResult.OK;
@@ -69,14 +71,14 @@ namespace NumDiff
                 if (NumDiff.Properties.Settings.Default.Separators[i] == ";")
                     checkBoxSemicolon.Checked = true;
             }
-            UpdateGrid();
+            checkBoxHasHeader.Checked = NumDiff.Properties.Settings.Default.Header;
         }
 
         private string[] GetSeparators()
         {
             List<string> res = new List<string>();
             if (checkBoxTab.Checked)
-                res.Add("TAB");
+                res.Add("\t"); // fine like this
 
             if (checkBoxSpace.Checked)
                 res.Add(" ");
@@ -94,14 +96,20 @@ namespace NumDiff
         {
             const int MAX_COLS = 100;
 
-            CompareResults cmp = new CompareResults()
-            {
-                Tollerance = 0,
-                Separators = GetSeparators()
-            };
-
             try
             {
+                CompareResults cmp = new CompareResults()
+                {
+                    Tollerance = 0,
+                    Separators = GetSeparators()
+                };
+
+                dataGridView1.Rows.Clear();
+                dataGridView1.Columns.Clear();
+
+                if (cmp.Separators.Length <= 0)
+                    return;
+
                 List<string[]> content = NumDiffUtil.ReadBlock(FilePath1, cmp, 0, 10);
 
                 try
@@ -111,8 +119,6 @@ namespace NumDiff
                     dataGridView1.CurrentCell = dataGridView1.Rows[0].Cells[0]; // required by BeginEdit
                     dataGridView1.BeginEdit(false);
 
-                    dataGridView1.Rows.Clear();
-                    dataGridView1.Columns.Clear();
                     dataGridView1.ColumnCount = Math.Min(MAX_COLS, content[0].Length);
                     dataGridView1.RowCount = content.Count;
 
