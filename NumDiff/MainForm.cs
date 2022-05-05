@@ -39,9 +39,9 @@ namespace NumDiff
         private void MainForm_Shown(object sender, EventArgs e)
         {
             //%prodebug%
-            //SetFilePath(1, @"C:\Users\matte\Desktop\old.txt");
-            //SetFilePath(2, @"C:\Users\matte\Desktop\new.txt");
-            //DoCompare();
+            SetFilePath(1, @"C:\Users\matte\Desktop\old.txt");
+            SetFilePath(2, @"C:\Users\matte\Desktop\new.txt");
+            DoCompare();
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -77,8 +77,8 @@ namespace NumDiff
             }
             if (keyData == (Keys.Control | Keys.D))
             {
-                if (showDifferencesToolStripMenuItem.Enabled)
-                    showDifferencesToolStripMenuItem_Click(null, null);
+                if (differencesToolStripMenuItem.Enabled)
+                    differencesToolStripMenuItem_Click(null, null);
                 return true;
             }
             return base.ProcessCmdKey(ref msg, keyData);
@@ -111,6 +111,7 @@ namespace NumDiff
             _lastGoToRow = 0;
             _lastGoToCol = 0;
             _lastSearch = "";
+            hideEqualColumnsToolStripMenuItem.Checked = false; //%future% it would be better not to reset it
         }
 
         /// <summary>
@@ -475,7 +476,7 @@ namespace NumDiff
             MessageBox.Show("String not found", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
-        private void showDifferencesToolStripMenuItem_Click(object sender, EventArgs e)
+        private void differencesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (_cmp != null && _cmp.OrderedDifferences.Count > 0)
             {
@@ -542,6 +543,41 @@ namespace NumDiff
                 e.CellStyle.BackColor = Color.Yellow;
             else
                 e.CellStyle.BackColor = SystemColors.Window;
+        }
+
+        private void hideEqualColumnsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            hideEqualColumnsToolStripMenuItem.Checked = !hideEqualColumnsToolStripMenuItem.Checked;
+
+            if (dataGridView1.ColumnCount != dataGridView2.ColumnCount || dataGridView1.ColumnCount <= 0 || _cmp.Differences == null)
+                return;
+
+            dataGridView1.BeginEdit(false);
+            dataGridView2.BeginEdit(false);
+
+            if (hideEqualColumnsToolStripMenuItem.Checked)
+            {
+                List<int> cols = _cmp.Differences.Select(x => x.Col).Distinct().OrderBy(x => x).ToList();
+                for (int col = 0; col < dataGridView1.ColumnCount; col++)
+                {
+                    if (!cols.Contains(col))
+                    {
+                        dataGridView1.Columns[col].Visible = false;
+                        dataGridView2.Columns[col].Visible = false;
+                    }
+                }
+            }
+            else
+            {
+                for (int col = 0; col < dataGridView1.ColumnCount; col++)
+                {
+                    dataGridView1.Columns[col].Visible = true;
+                    dataGridView2.Columns[col].Visible = true;
+                }
+            }
+
+            dataGridView1.EndEdit();
+            dataGridView2.EndEdit();
         }
 
         private void dataGridView2_CellStateChanged(object sender, DataGridViewCellStateChangedEventArgs e)
