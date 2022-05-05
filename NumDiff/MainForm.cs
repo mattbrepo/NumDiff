@@ -565,7 +565,7 @@ namespace NumDiff
                 List<int> cols = _cmp.Differences.Select(x => x.Col).Distinct().OrderBy(x => x).ToList();
                 for (int col = 0; col < dataGridView1.ColumnCount; col++)
                 {
-                    if (!cols.Contains(col))
+                    if (!cols.Contains(col) && !dataGridView1.Columns[col].Frozen)
                     {
                         dataGridView1.Columns[col].Visible = false;
                         dataGridView2.Columns[col].Visible = false;
@@ -620,6 +620,39 @@ namespace NumDiff
 
             dataGridView1.EndEdit();
             dataGridView2.EndEdit();
+        }
+
+        private void dataGridView1_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Right && e.ColumnIndex <= 0)
+                return;
+            if (dataGridView1.ColumnCount != dataGridView2.ColumnCount || dataGridView1.ColumnCount <= 0)
+                return;
+
+            bool isFrozen = !dataGridView1.Columns[e.ColumnIndex].Frozen;
+            
+            Font fontOld = dataGridView1.ColumnHeadersDefaultCellStyle.Font;
+            Font fontNew = null;
+            if (isFrozen)
+            {
+                fontNew = new Font(fontOld, FontStyle.Italic);
+            }
+            else
+            {
+                fontNew = new Font(fontOld, FontStyle.Regular);
+            }
+            DataGridViewCellStyle headerStyle = dataGridView1.ColumnHeadersDefaultCellStyle.Clone();
+            headerStyle.Font = fontNew;
+
+            dataGridView1.Columns[e.ColumnIndex].Frozen = isFrozen;
+            dataGridView1.Columns[e.ColumnIndex].HeaderCell.Style = headerStyle;
+            dataGridView2.Columns[e.ColumnIndex].Frozen = isFrozen;
+            dataGridView2.Columns[e.ColumnIndex].HeaderCell.Style = headerStyle;
+        }
+
+        private void dataGridView2_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            dataGridView1_ColumnHeaderMouseClick(sender, e);
         }
 
         private void dataGridView2_CellStateChanged(object sender, DataGridViewCellStateChangedEventArgs e)
