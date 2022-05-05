@@ -28,55 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.checkBoxTab = new System.Windows.Forms.CheckBox();
-            this.checkBoxComma = new System.Windows.Forms.CheckBox();
-            this.checkBoxSemicolon = new System.Windows.Forms.CheckBox();
-            this.checkBoxSpace = new System.Windows.Forms.CheckBox();
             this.buttonOk = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.labelTollerance = new System.Windows.Forms.Label();
             this.textBoxTollerance = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
-            // 
-            // checkBoxTab
-            // 
-            this.checkBoxTab.AutoSize = true;
-            this.checkBoxTab.Location = new System.Drawing.Point(12, 12);
-            this.checkBoxTab.Name = "checkBoxTab";
-            this.checkBoxTab.Size = new System.Drawing.Size(45, 17);
-            this.checkBoxTab.TabIndex = 0;
-            this.checkBoxTab.Text = "Tab";
-            this.checkBoxTab.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxComma
-            // 
-            this.checkBoxComma.AutoSize = true;
-            this.checkBoxComma.Location = new System.Drawing.Point(12, 35);
-            this.checkBoxComma.Name = "checkBoxComma";
-            this.checkBoxComma.Size = new System.Drawing.Size(61, 17);
-            this.checkBoxComma.TabIndex = 1;
-            this.checkBoxComma.Text = "Comma";
-            this.checkBoxComma.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxSemicolon
-            // 
-            this.checkBoxSemicolon.AutoSize = true;
-            this.checkBoxSemicolon.Location = new System.Drawing.Point(106, 12);
-            this.checkBoxSemicolon.Name = "checkBoxSemicolon";
-            this.checkBoxSemicolon.Size = new System.Drawing.Size(75, 17);
-            this.checkBoxSemicolon.TabIndex = 2;
-            this.checkBoxSemicolon.Text = "Semicolon";
-            this.checkBoxSemicolon.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxSpace
-            // 
-            this.checkBoxSpace.AutoSize = true;
-            this.checkBoxSpace.Location = new System.Drawing.Point(106, 35);
-            this.checkBoxSpace.Name = "checkBoxSpace";
-            this.checkBoxSpace.Size = new System.Drawing.Size(57, 17);
-            this.checkBoxSpace.TabIndex = 3;
-            this.checkBoxSpace.Text = "Space";
-            this.checkBoxSpace.UseVisualStyleBackColor = true;
             // 
             // buttonOk
             // 
@@ -101,7 +57,7 @@
             // labelTollerance
             // 
             this.labelTollerance.AutoSize = true;
-            this.labelTollerance.Location = new System.Drawing.Point(12, 74);
+            this.labelTollerance.Location = new System.Drawing.Point(12, 9);
             this.labelTollerance.Name = "labelTollerance";
             this.labelTollerance.Size = new System.Drawing.Size(57, 13);
             this.labelTollerance.TabIndex = 6;
@@ -109,7 +65,7 @@
             // 
             // textBoxTollerance
             // 
-            this.textBoxTollerance.Location = new System.Drawing.Point(106, 71);
+            this.textBoxTollerance.Location = new System.Drawing.Point(120, 6);
             this.textBoxTollerance.Name = "textBoxTollerance";
             this.textBoxTollerance.Size = new System.Drawing.Size(100, 20);
             this.textBoxTollerance.TabIndex = 7;
@@ -124,10 +80,6 @@
             this.Controls.Add(this.labelTollerance);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonOk);
-            this.Controls.Add(this.checkBoxSpace);
-            this.Controls.Add(this.checkBoxSemicolon);
-            this.Controls.Add(this.checkBoxComma);
-            this.Controls.Add(this.checkBoxTab);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -141,11 +93,6 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.CheckBox checkBoxTab;
-        private System.Windows.Forms.CheckBox checkBoxComma;
-        private System.Windows.Forms.CheckBox checkBoxSemicolon;
-        private System.Windows.Forms.CheckBox checkBoxSpace;
         private System.Windows.Forms.Button buttonOk;
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.Label labelTollerance;

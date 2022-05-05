@@ -60,7 +60,7 @@
             this.textBoxSearch.Name = "textBoxSearch";
             this.textBoxSearch.Size = new System.Drawing.Size(210, 20);
             this.textBoxSearch.TabIndex = 15;
-            this.textBoxSearch.Text = "1";
+            this.textBoxSearch.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxSearch_KeyPress);
             // 
             // labelSearch
             // 
@@ -80,6 +80,7 @@
             this.Controls.Add(this.buttonOk);
             this.Controls.Add(this.textBoxSearch);
             this.Controls.Add(this.labelSearch);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "SearchForm";

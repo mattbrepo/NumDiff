@@ -21,17 +21,6 @@ namespace NumDiff
         private void OptionsForm_Shown(object sender, EventArgs e)
         {
             textBoxTollerance.Text = "" + NumDiff.Properties.Settings.Default.Tollerance;
-            for (int i = 0; i < NumDiff.Properties.Settings.Default.Separators.Count; i++)
-            {
-                if (NumDiff.Properties.Settings.Default.Separators[i] == "TAB")
-                    checkBoxTab.Checked = true;
-                if (NumDiff.Properties.Settings.Default.Separators[i] == " ")
-                    checkBoxSpace.Checked = true;
-                if (NumDiff.Properties.Settings.Default.Separators[i] == ",")
-                    checkBoxComma.Checked = true;
-                if (NumDiff.Properties.Settings.Default.Separators[i] == ";")
-                    checkBoxSemicolon.Checked = true;
-            }
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)
@@ -54,20 +43,6 @@ namespace NumDiff
             }
 
             NumDiff.Properties.Settings.Default.Tollerance = d;
-            NumDiff.Properties.Settings.Default.Separators.Clear();
-
-            if (checkBoxTab.Checked)
-                NumDiff.Properties.Settings.Default.Separators.Add("TAB");
-
-            if (checkBoxSpace.Checked)
-                NumDiff.Properties.Settings.Default.Separators.Add(" ");
-
-            if (checkBoxComma.Checked)
-                NumDiff.Properties.Settings.Default.Separators.Add(",");
-
-            if (checkBoxSemicolon.Checked)
-                NumDiff.Properties.Settings.Default.Separators.Add(";");
-
             NumDiff.Properties.Settings.Default.Save();
 
             this.DialogResult = DialogResult.OK;

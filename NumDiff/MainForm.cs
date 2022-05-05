@@ -39,8 +39,8 @@ namespace NumDiff
         private void MainForm_Shown(object sender, EventArgs e)
         {
             //%prodebug%
-            //SetFilePath(1, @"C:\Users\matte\Desktop\old.txt");
-            //SetFilePath(2, @"C:\Users\matte\Desktop\new.txt");
+            //SetFilePath(1, @"C:\Users\matte\util\it\github\NumDiff\data\old.txt");
+            //SetFilePath(2, @"C:\Users\matte\util\it\github\NumDiff\data\new.txt");
             //DoCompare(true);
         }
 
@@ -473,6 +473,15 @@ namespace NumDiff
             _lastSearch = sf.GetSearch();
 
             // %improve% very basic search (still usefull when searching a column name)
+            for (int col = 0; col < _cmp.Headers.Count; col++)
+            {
+                if (_cmp.Headers[col].ToLower().Contains(_lastSearch.ToLower()))
+                {
+                    GoTo(0, col);
+                    return;
+                }
+            }
+
             System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.WaitCursor;
             foreach (DataGridViewRow row in dataGridView1.Rows)
             {
@@ -519,11 +528,24 @@ namespace NumDiff
         private void dataGridView1_ColumnAdded(object sender, DataGridViewColumnEventArgs e)
         {
             e.Column.FillWeight = 1; // https://social.msdn.microsoft.com/Forums/windows/en-US/327ff3e0-098c-4657-9af4-20d31fe5d6f0/sum-of-the-columns-fillweight-values-cannot-exceed-65535?forum=winformsdatacontrols
+
+            //// %column_header%
+            //if (NumDiff.Properties.Settings.Default.Header)
+            //{
+            //    string header = "";
+            //    if (e.Column.Index < _cmp.Headers.Count)
+            //        header = _cmp.Headers[e.Column.Index];
+            //    e.Column.HeaderText = header;
+            //}
+            //else
+            //{
+            //    e.Column.HeaderText = "";
+            //}
         }
 
         private void dataGridView2_ColumnAdded(object sender, DataGridViewColumnEventArgs e)
         {
-            e.Column.FillWeight = 1; // https://social.msdn.microsoft.com/Forums/windows/en-US/327ff3e0-098c-4657-9af4-20d31fe5d6f0/sum-of-the-columns-fillweight-values-cannot-exceed-65535?forum=winformsdatacontrols
+            dataGridView1_ColumnAdded(sender, e);
         }
 
         private void vScrollBarMain_Scroll(object sender, ScrollEventArgs e)

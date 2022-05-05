@@ -103,6 +103,7 @@
             this.Controls.Add(this.labelCol);
             this.Controls.Add(this.textBoxRow);
             this.Controls.Add(this.labelRow);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "GoToForm";

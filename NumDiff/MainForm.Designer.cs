@@ -132,7 +132,7 @@
             this.dataGridView2.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dataGridView2_CellFormatting);
             this.dataGridView2.CellStateChanged += new System.Windows.Forms.DataGridViewCellStateChangedEventHandler(this.dataGridView2_CellStateChanged);
             this.dataGridView2.CellValueNeeded += new System.Windows.Forms.DataGridViewCellValueEventHandler(this.dataGridView2_CellValueNeeded);
-            this.dataGridView2.ColumnAdded += new System.Windows.Forms.DataGridViewColumnEventHandler(this.dataGridView1_ColumnAdded);
+            this.dataGridView2.ColumnAdded += new System.Windows.Forms.DataGridViewColumnEventHandler(this.dataGridView2_ColumnAdded);
             this.dataGridView2.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView2_ColumnHeaderMouseClick);
             this.dataGridView2.DragDrop += new System.Windows.Forms.DragEventHandler(this.dataGridView2_DragDrop);
             this.dataGridView2.DragEnter += new System.Windows.Forms.DragEventHandler(this.dataGridView2_DragEnter);
@@ -249,35 +249,35 @@
             // openFile1ToolStripMenuItem
             // 
             this.openFile1ToolStripMenuItem.Name = "openFile1ToolStripMenuItem";
-            this.openFile1ToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
+            this.openFile1ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.openFile1ToolStripMenuItem.Text = "Open file 1";
             this.openFile1ToolStripMenuItem.Click += new System.EventHandler(this.openFile1ToolStripMenuItem_Click);
             // 
             // openFile2ToolStripMenuItem
             // 
             this.openFile2ToolStripMenuItem.Name = "openFile2ToolStripMenuItem";
-            this.openFile2ToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
+            this.openFile2ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.openFile2ToolStripMenuItem.Text = "Open file 2";
             this.openFile2ToolStripMenuItem.Click += new System.EventHandler(this.openFile2ToolStripMenuItem_Click);
             // 
             // refreshToolStripMenuItem
             // 
             this.refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
-            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
+            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.refreshToolStripMenuItem.Text = "Refresh";
             this.refreshToolStripMenuItem.Click += new System.EventHandler(this.refreshToolStripMenuItem_Click);
             // 
             // resetToolStripMenuItem
             // 
             this.resetToolStripMenuItem.Name = "resetToolStripMenuItem";
-            this.resetToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
+            this.resetToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.resetToolStripMenuItem.Text = "&Reset";
             this.resetToolStripMenuItem.Click += new System.EventHandler(this.resetToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.exitToolStripMenuItem.Text = "&Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -296,35 +296,35 @@
             // goToToolStripMenuItem
             // 
             this.goToToolStripMenuItem.Name = "goToToolStripMenuItem";
-            this.goToToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
-            this.goToToolStripMenuItem.Text = "Go to (Ctrl + G)";
+            this.goToToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
+            this.goToToolStripMenuItem.Text = "Go to... (Ctrl + G)";
             this.goToToolStripMenuItem.Click += new System.EventHandler(this.goToToolStripMenuItem_Click);
             // 
             // searchToolStripMenuItem
             // 
             this.searchToolStripMenuItem.Name = "searchToolStripMenuItem";
-            this.searchToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
-            this.searchToolStripMenuItem.Text = "Search (Ctrl + F)";
+            this.searchToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
+            this.searchToolStripMenuItem.Text = "Search header... (Ctrl + F)";
             this.searchToolStripMenuItem.Click += new System.EventHandler(this.searchToolStripMenuItem_Click);
             // 
             // differencesToolStripMenuItem
             // 
             this.differencesToolStripMenuItem.Name = "differencesToolStripMenuItem";
-            this.differencesToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.differencesToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
             this.differencesToolStripMenuItem.Text = "Differences (Ctrl + D)";
             this.differencesToolStripMenuItem.Click += new System.EventHandler(this.differencesToolStripMenuItem_Click);
             // 
             // hideEqualColumnsToolStripMenuItem
             // 
             this.hideEqualColumnsToolStripMenuItem.Name = "hideEqualColumnsToolStripMenuItem";
-            this.hideEqualColumnsToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.hideEqualColumnsToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
             this.hideEqualColumnsToolStripMenuItem.Text = "Hide equal columns";
             this.hideEqualColumnsToolStripMenuItem.Click += new System.EventHandler(this.hideEqualColumnsToolStripMenuItem_Click);
             // 
             // hideEqualRowsToolStripMenuItem
             // 
             this.hideEqualRowsToolStripMenuItem.Name = "hideEqualRowsToolStripMenuItem";
-            this.hideEqualRowsToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.hideEqualRowsToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
             this.hideEqualRowsToolStripMenuItem.Text = "Hide equal rows";
             this.hideEqualRowsToolStripMenuItem.Click += new System.EventHandler(this.hideEqualRowsToolStripMenuItem_Click);
             // 
@@ -339,7 +339,7 @@
             // optionsToolStripMenuItem
             // 
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.optionsToolStripMenuItem.Text = "Options";
             this.optionsToolStripMenuItem.Click += new System.EventHandler(this.optionsToolStripMenuItem_Click);
             // 

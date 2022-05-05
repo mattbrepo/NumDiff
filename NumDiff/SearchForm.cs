@@ -36,5 +36,13 @@ namespace NumDiff
         {
             return textBoxSearch.Text;
         }
+
+        private void textBoxSearch_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Return)
+            {
+                buttonOk_Click(null, null);
+            }
+        }
     }
 }
