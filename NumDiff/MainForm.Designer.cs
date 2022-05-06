@@ -64,6 +64,7 @@
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusCurrCellLeft = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusCurrCellRight = new System.Windows.Forms.ToolStripStatusLabel();
+            this.swapViewsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panelMain.SuspendLayout();
             this.panelGrids.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -249,35 +250,35 @@
             // openFile1ToolStripMenuItem
             // 
             this.openFile1ToolStripMenuItem.Name = "openFile1ToolStripMenuItem";
-            this.openFile1ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.openFile1ToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
             this.openFile1ToolStripMenuItem.Text = "Open file 1";
             this.openFile1ToolStripMenuItem.Click += new System.EventHandler(this.openFile1ToolStripMenuItem_Click);
             // 
             // openFile2ToolStripMenuItem
             // 
             this.openFile2ToolStripMenuItem.Name = "openFile2ToolStripMenuItem";
-            this.openFile2ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.openFile2ToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
             this.openFile2ToolStripMenuItem.Text = "Open file 2";
             this.openFile2ToolStripMenuItem.Click += new System.EventHandler(this.openFile2ToolStripMenuItem_Click);
             // 
             // refreshToolStripMenuItem
             // 
             this.refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
-            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
             this.refreshToolStripMenuItem.Text = "Refresh";
             this.refreshToolStripMenuItem.Click += new System.EventHandler(this.refreshToolStripMenuItem_Click);
             // 
             // resetToolStripMenuItem
             // 
             this.resetToolStripMenuItem.Name = "resetToolStripMenuItem";
-            this.resetToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.resetToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
             this.resetToolStripMenuItem.Text = "&Reset";
             this.resetToolStripMenuItem.Click += new System.EventHandler(this.resetToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
             this.exitToolStripMenuItem.Text = "&Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -288,7 +289,8 @@
             this.searchToolStripMenuItem,
             this.differencesToolStripMenuItem,
             this.hideEqualColumnsToolStripMenuItem,
-            this.hideEqualRowsToolStripMenuItem});
+            this.hideEqualRowsToolStripMenuItem,
+            this.swapViewsToolStripMenuItem});
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.viewToolStripMenuItem.Text = "View";
@@ -339,7 +341,7 @@
             // optionsToolStripMenuItem
             // 
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
             this.optionsToolStripMenuItem.Text = "Options";
             this.optionsToolStripMenuItem.Click += new System.EventHandler(this.optionsToolStripMenuItem_Click);
             // 
@@ -393,6 +395,13 @@
             this.toolStripStatusCurrCellRight.Name = "toolStripStatusCurrCellRight";
             this.toolStripStatusCurrCellRight.Size = new System.Drawing.Size(155, 17);
             this.toolStripStatusCurrCellRight.Text = "toolStripStatusCurrCellRight";
+            // 
+            // swapViewsToolStripMenuItem
+            // 
+            this.swapViewsToolStripMenuItem.Name = "swapViewsToolStripMenuItem";
+            this.swapViewsToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
+            this.swapViewsToolStripMenuItem.Text = "Swap views";
+            this.swapViewsToolStripMenuItem.Click += new System.EventHandler(this.swapViewsToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -463,6 +472,7 @@
         private System.Windows.Forms.ToolStripMenuItem differencesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem hideEqualColumnsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem hideEqualRowsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem swapViewsToolStripMenuItem;
     }
 }
 

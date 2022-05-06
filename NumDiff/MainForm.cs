@@ -53,7 +53,10 @@ namespace NumDiff
         {
             try
             {
-                panel1.Width = this.Width / 2;
+                if (panel1.Dock == DockStyle.Left)
+                    panel1.Width = this.Width / 2;
+                else
+                    panel2.Width = this.Width / 2;
             }
             catch (Exception ex)
             {
@@ -86,6 +89,7 @@ namespace NumDiff
 
         #endregion
 
+        #region basic functions
         /// <summary>
         /// Reset the UI
         /// </summary>
@@ -139,7 +143,8 @@ namespace NumDiff
 
             System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.WaitCursor;
 
-            _cmp = new CompareResults() {
+            _cmp = new CompareResults()
+            {
                 Tollerance = NumDiff.Properties.Settings.Default.Tollerance,
                 Separators = GetSeparators(),
                 FilePath1 = _filePath1,
@@ -157,7 +162,7 @@ namespace NumDiff
 
             // read first block (it could be optimized)
             UpdateReadBlock(0);
-            
+
             // set UI data
             SetData();
 
@@ -291,7 +296,7 @@ namespace NumDiff
                 dgv.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { HeaderText = header, Name = "Hname" + col.ToString() });
             }
             dgv.ColumnHeadersVisible = true;
-            
+
             // row header
             dgv.RowCount = rows;
             for (int row = 0; row < rows; row++)
@@ -337,6 +342,22 @@ namespace NumDiff
                 _readBlockRowIndex[fileNum - 1] = row;
             }
         }
+
+        private void GoTo(int row, int col)
+        {
+            try
+            {
+                dataGridView1.CurrentCell = dataGridView1.Rows[row].Cells[col];
+                dataGridView2.CurrentCell = dataGridView2.Rows[row].Cells[col];
+                _lastGoToRow = row;
+                _lastGoToCol = col;
+            }
+            catch
+            {
+            }
+        }
+
+        #endregion
 
         #region drag drop
         private void dataGridView1_DragEnter(object sender, DragEventArgs e)
@@ -385,10 +406,84 @@ namespace NumDiff
                 SetFilePath(2, files[0]);
             }
             DoCompare(true);
-        } 
+        }
         #endregion
 
         #region menu
+
+        private void hideEqualColumnsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            hideEqualColumnsToolStripMenuItem.Checked = !hideEqualColumnsToolStripMenuItem.Checked;
+
+            if (dataGridView1.ColumnCount != dataGridView2.ColumnCount || dataGridView1.ColumnCount <= 0 || _cmp.Differences == null)
+                return;
+
+            dataGridView1.CurrentCell = dataGridView1.FirstDisplayedCell;
+            dataGridView1.BeginEdit(false);
+            dataGridView2.CurrentCell = dataGridView2.FirstDisplayedCell;
+            dataGridView2.BeginEdit(false);
+
+            if (hideEqualColumnsToolStripMenuItem.Checked)
+            {
+                List<int> cols = _cmp.Differences.Select(x => x.Col).Distinct().OrderBy(x => x).ToList();
+                for (int col = 0; col < dataGridView1.ColumnCount; col++)
+                {
+                    if (!cols.Contains(col) && !dataGridView1.Columns[col].Frozen)
+                    {
+                        dataGridView1.Columns[col].Visible = false;
+                        dataGridView2.Columns[col].Visible = false;
+                    }
+                }
+            }
+            else
+            {
+                for (int col = 0; col < dataGridView1.ColumnCount; col++)
+                {
+                    dataGridView1.Columns[col].Visible = true;
+                    dataGridView2.Columns[col].Visible = true;
+                }
+            }
+
+            dataGridView1.EndEdit();
+            dataGridView2.EndEdit();
+        }
+
+        private void hideEqualRowsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            hideEqualRowsToolStripMenuItem.Checked = !hideEqualRowsToolStripMenuItem.Checked;
+
+            if (dataGridView1.RowCount != dataGridView2.RowCount || dataGridView1.ColumnCount <= 0 || _cmp.Differences == null)
+                return;
+
+            dataGridView1.CurrentCell = dataGridView1.FirstDisplayedCell;
+            dataGridView1.BeginEdit(false);
+            dataGridView2.CurrentCell = dataGridView2.FirstDisplayedCell;
+            dataGridView2.BeginEdit(false);
+
+            if (hideEqualRowsToolStripMenuItem.Checked)
+            {
+                List<int> rows = _cmp.Differences.Select(x => x.Row).Distinct().OrderBy(x => x).ToList();
+                for (int row = 0; row < dataGridView1.RowCount; row++)
+                {
+                    if (!rows.Contains(row + 1))
+                    {
+                        dataGridView1.Rows[row].Visible = false;
+                        dataGridView2.Rows[row].Visible = false;
+                    }
+                }
+            }
+            else
+            {
+                for (int row = 0; row < dataGridView1.RowCount; row++)
+                {
+                    dataGridView1.Rows[row].Visible = true;
+                    dataGridView2.Rows[row].Visible = true;
+                }
+            }
+
+            dataGridView1.EndEdit();
+            dataGridView2.EndEdit();
+        }
 
         private void openFile1ToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -434,18 +529,33 @@ namespace NumDiff
             DoCompare(true);
         }
 
-        private void GoTo(int row, int col)
+        private void swapViewsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            try
+            Panel pnlNewLeft = null;
+            Panel pnlNewRight = null;
+            if (panel1.Dock == DockStyle.Left)
             {
-                dataGridView1.CurrentCell = dataGridView1.Rows[row].Cells[col];
-                dataGridView2.CurrentCell = dataGridView2.Rows[row].Cells[col];
-                _lastGoToRow = row;
-                _lastGoToCol = col;
+                pnlNewLeft = panel2;
+                pnlNewRight = panel1;
             }
-            catch
+            else
             {
+                pnlNewLeft = panel1;
+                pnlNewRight = panel2;
             }
+
+            pnlNewRight.Dock = DockStyle.None;
+            pnlNewLeft.Dock = DockStyle.None;
+
+            pnlNewLeft.Width = pnlNewRight.Width;
+            pnlNewLeft.Left = 0;
+            splitter1.Left = pnlNewLeft.Left + pnlNewLeft.Width;
+            pnlNewRight.Left = splitter1.Left + splitter1.Width;
+
+            pnlNewLeft.Dock = DockStyle.Left;
+            splitter1.BringToFront();
+            pnlNewRight.BringToFront();
+            pnlNewRight.Dock = DockStyle.Fill;
         }
 
         private void goToToolStripMenuItem_Click(object sender, EventArgs e)
@@ -580,80 +690,6 @@ namespace NumDiff
                 e.CellStyle.BackColor = Color.Yellow;
             else
                 e.CellStyle.BackColor = SystemColors.Window;
-        }
-
-        private void hideEqualColumnsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            hideEqualColumnsToolStripMenuItem.Checked = !hideEqualColumnsToolStripMenuItem.Checked;
-
-            if (dataGridView1.ColumnCount != dataGridView2.ColumnCount || dataGridView1.ColumnCount <= 0 || _cmp.Differences == null)
-                return;
-
-            dataGridView1.CurrentCell = dataGridView1.FirstDisplayedCell;
-            dataGridView1.BeginEdit(false);
-            dataGridView2.CurrentCell = dataGridView2.FirstDisplayedCell;
-            dataGridView2.BeginEdit(false);
-
-            if (hideEqualColumnsToolStripMenuItem.Checked)
-            {
-                List<int> cols = _cmp.Differences.Select(x => x.Col).Distinct().OrderBy(x => x).ToList();
-                for (int col = 0; col < dataGridView1.ColumnCount; col++)
-                {
-                    if (!cols.Contains(col) && !dataGridView1.Columns[col].Frozen)
-                    {
-                        dataGridView1.Columns[col].Visible = false;
-                        dataGridView2.Columns[col].Visible = false;
-                    }
-                }
-            }
-            else
-            {
-                for (int col = 0; col < dataGridView1.ColumnCount; col++)
-                {
-                    dataGridView1.Columns[col].Visible = true;
-                    dataGridView2.Columns[col].Visible = true;
-                }
-            }
-
-            dataGridView1.EndEdit();
-            dataGridView2.EndEdit();
-        }
-
-        private void hideEqualRowsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            hideEqualRowsToolStripMenuItem.Checked = !hideEqualRowsToolStripMenuItem.Checked;
-
-            if (dataGridView1.RowCount != dataGridView2.RowCount || dataGridView1.ColumnCount <= 0 || _cmp.Differences == null)
-                return;
-
-            dataGridView1.CurrentCell = dataGridView1.FirstDisplayedCell;
-            dataGridView1.BeginEdit(false);
-            dataGridView2.CurrentCell = dataGridView2.FirstDisplayedCell;
-            dataGridView2.BeginEdit(false);
-
-            if (hideEqualRowsToolStripMenuItem.Checked)
-            {
-                List<int> rows = _cmp.Differences.Select(x => x.Row).Distinct().OrderBy(x => x).ToList();
-                for (int row = 0; row < dataGridView1.RowCount; row++)
-                {
-                    if (!rows.Contains(row + 1))
-                    {
-                        dataGridView1.Rows[row].Visible = false;
-                        dataGridView2.Rows[row].Visible = false;
-                    }
-                }
-            }
-            else
-            {
-                for (int row = 0; row < dataGridView1.RowCount; row++)
-                {
-                    dataGridView1.Rows[row].Visible = true;
-                    dataGridView2.Rows[row].Visible = true;
-                }
-            }
-
-            dataGridView1.EndEdit();
-            dataGridView2.EndEdit();
         }
 
         private void dataGridView1_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
